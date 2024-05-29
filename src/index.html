@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Orora Download</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="새로운브라우저, 유튜브프리미엄, 고화질동영상, 고품질음원, 광고차단, 광고없는 영상 시청, 동영상 다운로드, 인스타그램 동영상 다운로드, 스토리 다운로드, 이미지 다운로드, 무료vpn, dns우회접속, 드라마, 예능, 영화, 동영상편집, 개인정보보호, 음원추출, 무료 브라우저, 광고 차단 기능, 고음질 동영상, 빠른 다운로드, 플레이 리스트 관리, 안전한 온라인 경험, 모바일 호환성, 다중 동영상 추출, 사용자 친화적 인터페이스, 개인정보 보호, 확장 기능, 동영상 소장, 다양한 포맷 지원, 속도 및 성능 최적화, 사용자 지정 설정, 브라우저 보안, 다국어 지원, 생산성 향상, 커뮤니티 지원, 신속한 기술 지원">
+  <meta name="keywords" content="새로운브라우저, 유튜브프리미엄, 고화질동영상, 고품질음원, 광고차단, 광고없는 영상 시청, 동영상 다운로드, 인스타그램 동영상 다운로드, 스토리 다운로드, 이미지 다운로드, 무료vpn, dns우회접속, 드라마, 예능, 영화, 동영상편집, 개인정보보호, 음원추출, 무료 브라우저, 광고 차단 기능, 고음질 동영상, 빠른 다운로드, 플레이 리스트 관리, 안전한 온라인 경험, 모바일 호환성, 다중 동영상 추출, 사용자 친화적 인터페이스, 개인정보 보호, 확장 기능, 동영상 소장, 다양한 포맷 지원, 속도 및 성능 최적화, 사용자 지정 설정, 브라우저 보안, 다국어 지원, 생산성 향상, 커뮤니티 지원, 신속한 기술 지원">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+  <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-config" content="assets/icons/browserconfig.xml">
+  <link rel="shortcut icon" href="assets/icons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="naver-site-verification" content="15fcd1505a4120745050702e9dd7d4645247857a" />
+  <meta name="theme-color" content="#212529">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BCY9HQTGLM"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-BCY9HQTGLM');
+
+    function getQueryParameter(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+  
+    function injectCurrentURL() {
+        const currentURL = getQueryParameter('currentUrl');
+        if (currentURL) {
+            document.getElementById('addUrl').value = decodeURIComponent(currentURL.replace(/\+/g, ' '));
+        }
+        cleanURL();
+    }
+  
+    function cleanURL() {
+        const url = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.pushState({path:url}, '', url);
+    }
+  
+    window.onload = injectCurrentURL;
+
+
+    
+  </script>
+</head>
+<body style="background: linear-gradient(135deg,#dff5ff,#f6f5f2)">
+  <app-root></app-root>
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+</html>
+
+

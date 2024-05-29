@@ -1,0 +1,113 @@
+{
+  "configVersion": 1,
+  "timestamp": 1716108831882,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/custom-service-worker.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main.js",
+        "/manifest.webmanifest",
+        "/polyfills.js",
+        "/runtime.js",
+        "/scripts.js",
+        "/styles.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/body/step1.svg",
+        "/assets/body/step2.svg",
+        "/assets/body/step3.svg",
+        "/assets/default.png",
+        "/assets/footer/badges.svg",
+        "/assets/footer/fb.svg",
+        "/assets/footer/insta.svg",
+        "/assets/footer/logo.svg",
+        "/assets/footer/playstore.jpeg",
+        "/assets/footer/win.jpeg",
+        "/assets/footer/youtube.svg",
+        "/assets/icons/android-chrome-192x192.png",
+        "/assets/icons/android-chrome-384x384.png",
+        "/assets/icons/apple-touch-icon.png",
+        "/assets/icons/browserconfig.xml",
+        "/assets/icons/favicon-16x16.png",
+        "/assets/icons/favicon-32x32.png",
+        "/assets/icons/favicon.ico",
+        "/assets/icons/mstile-150x150.png",
+        "/assets/icons/orora.ai",
+        "/assets/icons/safari-pinned-tab.svg",
+        "/assets/logo.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/assets/body/step1.svg": "58faab55930019a8494de9cd3107488ad8cb35cb",
+    "/assets/body/step2.svg": "f74fbf605f7df4790b5b8f0a987f825f3d2dc5d2",
+    "/assets/body/step3.svg": "89b0cb50a1e297a7d15db0d9732cd123d818ad18",
+    "/assets/default.png": "4bbd39fe4f389870239002fa8a72c1b5794a0a1b",
+    "/assets/footer/badges.svg": "b47d77e8d433db29cc60adf3705b32618ff8371e",
+    "/assets/footer/fb.svg": "64d4748607ee565302d3bcc9f75d61236f21e7a0",
+    "/assets/footer/insta.svg": "88ead1d1d6e3771815f9eb12cba96b17107bf89e",
+    "/assets/footer/logo.svg": "e88e8ccd24432b8d21849bcdb48a694695d59697",
+    "/assets/footer/playstore.jpeg": "31058c8441c5581c32b0224edac1c731577c1fde",
+    "/assets/footer/win.jpeg": "3ee78a04985a9c35af13d7a1eb3876ad2439641c",
+    "/assets/footer/youtube.svg": "312d7934ed36f9925be821d9a3d3b85de17feb05",
+    "/assets/icons/android-chrome-192x192.png": "680864c0c9db2776c741010b3cbeb739f72557aa",
+    "/assets/icons/android-chrome-384x384.png": "3ef21afa332edd0fe683a3b84abbeb6a75895273",
+    "/assets/icons/apple-touch-icon.png": "6eaecbbc611e4fc78bda7428425fb07771bf1b91",
+    "/assets/icons/browserconfig.xml": "4fce679a3004635b65147fcf7d4f82626a583714",
+    "/assets/icons/favicon-16x16.png": "7e0830d1f2418f64508172dc0b7e3635e12eb2a2",
+    "/assets/icons/favicon-32x32.png": "fe6bffb0baaa2d16f12eaaa0cf4b3b1ee4398c34",
+    "/assets/icons/favicon.ico": "1b83d3a177f55d374f06cb9a74b998b82ce7aa8d",
+    "/assets/icons/mstile-150x150.png": "fa2d0969d4ac28389266c08bc6c33e41cde2daac",
+    "/assets/icons/orora.ai": "f9a28e28e05dabd3a6b431c0a594d42d22ab327a",
+    "/assets/icons/safari-pinned-tab.svg": "74e51a262696185a55d01f8c38988e2ebe610766",
+    "/assets/logo.svg": "e88e8ccd24432b8d21849bcdb48a694695d59697",
+    "/custom-service-worker.js": "1cbdc45cb00605421e93226911d4074d8e00f18f",
+    "/favicon.ico": "1b83d3a177f55d374f06cb9a74b998b82ce7aa8d",
+    "/index.html": "f17d62befd1caf01da84b53c2a7c0dbf93dec511",
+    "/main.js": "2a905b3cdbd2233b2af1861f6afd63305b03e25f",
+    "/manifest.webmanifest": "b63ac05331bbb9be6090d82f957bc0dff4df86d8",
+    "/polyfills.js": "142c8598cedb025f4cd11ba71d2e51d511eca9e2",
+    "/runtime.js": "f907cb2a1b91cedd6bbcf1c3a4cd8ec91dbbd788",
+    "/scripts.js": "3e03c7963828ff9539f82dcd788ff3ac916212d2",
+    "/styles.css": "6872d9eb901a0cca7e4d4c262f53a3864ceae6e2"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

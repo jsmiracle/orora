@@ -1,0 +1,1041 @@
+<nav id="navbar" class="navbar bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"> <img src="../assets/logo.svg" alt="svg" /></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel"> <img src="../assets/logo.svg" alt="svg" /></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul *ngIf="hasToken" class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="#">Downloads</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Settings</a>
+            
+          </li>
+        </ul>
+        <form *ngIf="!hasToken" class="d-flex mt-3 header_btns" role="search">
+          <button class="btn btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close" (click)="openSignUpModal()">Signup</button>
+          <button class="btn btn-outline-primary" data-bs-dismiss="offcanvas" aria-label="Close" (click)="openModal()">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main role="main" class="container container-xl ">
+  <div class="row" style="margin-top: 18%">
+    <div class="col-lg-2 text-center">
+      <img
+        src="https://avatars.mds.yandex.net/get-direct-picture/103005/rv8LIeDIaaO2ar_lnysovw/orig"
+        loading="lazy"
+        alt=""
+        style="max-width: 90%; padding-top: 3%"
+      />
+    </div>
+    <div class="col-lg-8">
+      <div >
+        <form #f="ngForm">
+          <div style="text-align: center">
+            <img
+              src="https://assets-global.website-files.com/62176230ce1307d5713ca09a/652fb17b4f4f5e9dd186b8de_image%20(3).gif"
+              loading="lazy"
+              alt=""
+              style="max-width: 90%; "
+            />
+          </div>
+          <div
+            style="
+              font-size: xxx-large;
+              font-weight: bolder;
+              padding: 10px;
+              text-align: center;
+              background: -webkit-linear-gradient(45deg, #10439f, #74e291);
+              margin: 2rem auto;
+              background-clip: text;
+              -webkit-text-fill-color: transparent;
+              white-space: pre-wrap;
+            "
+            _ngcontent-ng-c2310961675=""
+            class="page-title"
+          >
+            온라인 비디오 다운로드
+          </div>
+          <div class="container add-url-box">
+            <div class="row">
+              <div class="col add-url-component input-group">
+                <input
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  class="form-control"
+                  placeholder="Video or playlist URL"
+                  name="addUrl"
+                  id="addUrl"
+                  [(ngModel)]="addUrl"
+                  [disabled]="addInProgress || downloads.loading"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 add-url-component">
+                <div class="input-group">
+                  <span class="input-group-text">Quality</span>
+                  <select
+                    class="form-select"
+                    name="quality"
+                    [(ngModel)]="quality"
+                    (change)="qualityChanged()"
+                    [disabled]="addInProgress || downloads.loading"
+                  >
+                    <option *ngFor="let q of qualities" [ngValue]="q.id">
+                      {{ q.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4 add-url-component">
+                <div class="input-group">
+                  <span class="input-group-text">Format</span>
+                  <select
+                    class="form-select"
+                    name="format"
+                    [(ngModel)]="format"
+                    (change)="formatChanged()"
+                    [disabled]="addInProgress || downloads.loading"
+                  >
+                    <option *ngFor="let f of formats" [ngValue]="f.id">
+                      {{ f.text }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4 add-url-component" style="display: none">
+                <div class="input-group">
+                  <span class="input-group-text">Auto Start</span>
+                  <select
+                    class="form-select"
+                    name="autoStart"
+                    [(ngModel)]="autoStart"
+                    (change)="autoStartChanged()"
+                    [disabled]="addInProgress || downloads.loading"
+                  >
+                    <option [ngValue]="false">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4 add-url-component">
+                <div
+                  [attr.class]="
+                    showAdvanced() ? 'btn-group add-url-group' : 'add-url-group'
+                  "
+                  ngbDropdown
+                  #advancedDropdown="ngbDropdown"
+                  display="dynamic"
+                  placement="bottom-end"
+                >
+                  <button
+                    class="btn btn-primary add-url"
+                    style="border-radius: 0.375rem"
+                    type="submit"
+                    (click)="addDownload()"
+                    [disabled]="addInProgress || downloads.loading"
+                  >
+                    <span
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      id="add-spinner"
+                      *ngIf="addInProgress"
+                    ></span>
+                    <fa-icon [icon]="faDownload"></fa-icon>
+                    {{ addInProgress ? "Downloading..." : "Download" }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div *ngIf="downloads.loading" class="alert alert-info" role="alert">
+          Connecting to server...
+        </div>
+        <div
+          style="
+            border: solid;
+            border-radius: 15px;
+            border-color: white;
+            background-color: white;
+            margin: 2rem auto;
+          "
+        >
+          <div
+            class="metube-section-header"
+            style="
+              font-weight: bolder;
+              font-size: 1.8rem;
+              font-weight: 300;
+              position: relative;
+              padding: 0.5rem;
+              margin: 0.5rem;
+              overflow: scroll;
+            "
+          >
+            Download
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 1rem">
+                  <app-master-checkbox
+                    #queueMasterCheckbox
+                    [id]="'queue'"
+                    [list]="downloads.queue"
+                    (changed)="queueSelectionChanged($event)"
+                  ></app-master-checkbox>
+                </th>
+                <th scope="col" style="width: 10rem"></th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="btn btn-link text-decoration-none px-0 me-4"
+                    disabled
+                    #queueDelSelected
+                    (click)="delSelectedDownloads('queue')"
+                    style="font-size: 0.8rem"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel
+                    selected
+                  </button>
+                </th>
+                <th scope="col" style="width: 14rem">Progress</th>
+                <th scope="col" style="width: 2rem"></th>
+                <th scope="col" style="width: 2rem"></th>
+                <th scope="col" style="width: 2rem"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let download of downloads.queue | keyvalue : asIsOrder;
+                  trackBy: identifyDownloadRow
+                "
+                [class.disabled]="download.value.deleting"
+              >
+                <td>
+                  <app-slave-checkbox
+                    [id]="download.key"
+                    [master]="queueMasterCheckbox"
+                    [checkable]="download.value"
+                  ></app-slave-checkbox>
+                </td>
+                <td>
+                  <div *ngIf="download.value.thumbnailUrl">
+                    <img
+                      [src]="download.value.thumbnailUrl"
+                      alt="YouTube Thumbnail"
+                      style="max-width: 10rem; height: auto"
+                    />
+                  </div>
+                </td>
+                <td title="{{ download.value.filename }}">
+                  <span class="down-info">File name:</span>
+                  {{ download.value.title }}
+                  <br />
+                  <span class="down-info">Quality:</span>
+                  {{ download.value.quality }}
+                  <br />
+                  <span class="down-info">Format:</span>
+                  {{ download.value.format }}
+                  <br />
+                  <span class="down-info">Speed:</span>
+                  {{ download.value.speed | speed }}
+                </td>
+                <td>
+                  <ngb-progressbar
+                    height="1.5rem"
+                    [showValue]="download.value.status != 'preparing'"
+                    [striped]="download.value.status == 'preparing'"
+                    [animated]="download.value.status == 'preparing'"
+                    type="success"
+                    [value]="
+                      download.value.status == 'preparing'
+                        ? 100
+                        : (download.value.percent | number : '1.0-0')
+                    "
+                  ></ngb-progressbar>
+                </td>
+                <td>
+                  <button
+                    *ngIf="download.value.status === 'pending'"
+                    type="button"
+                    class="btn btn-link"
+                    (click)="downloadItemByKey(download.key)"
+                  >
+                    <fa-icon [icon]="faDownload"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    (click)="delDownload('queue', download.key)"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <a href="{{ download.value.url }}" target="_blank"
+                    ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
+                  ></a>
+                </td>
+              </tr>
+
+              <!-- Completed section -->
+              <tr
+                *ngFor="
+                  let download of downloads.done | keyvalue : asIsOrder;
+                  trackBy: identifyDownloadRow
+                "
+                [class.disabled]="download.value.deleting"
+              >
+                <td></td>
+                <td>
+                  <div *ngIf="download.value.thumbnailUrl">
+                    <img
+                      [src]="download.value.thumbnailUrl"
+                      alt="YouTube Thumbnail"
+                      style="max-width: 10rem; height: auto"
+                    />
+                  </div>
+                </td>
+                <td>
+                  <div style="display: inline-block; width: 1.5rem">
+                    <fa-icon
+                      *ngIf="download.value.status == 'finished'"
+                      [icon]="faCheckCircle"
+                      class="text-success"
+                    ></fa-icon>
+                    <fa-icon
+                      *ngIf="download.value.status == 'error'"
+                      [icon]="faTimesCircle"
+                      class="text-danger"
+                    ></fa-icon>
+                  </div>
+                  <span
+                    ngbTooltip="{{ download.value.msg }} | {{
+                      download.value.error
+                    }}"
+                    ><a
+                      *ngIf="!!download.value.filename; else noDownloadLink"
+                      href="{{ buildDownloadLink(download.value) }}"
+                      target="_blank"
+                      ><span class="down-info">File name:</span>
+                      {{ download.value.title }}</a
+                    ></span
+                  >
+                  <br />
+                  <span class="down-info">Quality:</span>
+                  {{ download.value.quality }}
+                  <br />
+                  <span class="down-info">Format:</span>
+                  {{ download.value.format }}
+                  <br />
+                  <span *ngIf="download.value.size"
+                    ><span class="down-info">File size:</span>
+                    {{ download.value.size | fileSize }}</span
+                  >
+                  <ng-template #noDownloadLink>
+                    {{ download.value.title }}
+                    <span *ngIf="download.value.msg"
+                      ><br />{{ download.value.msg }}</span
+                    >
+                    <span *ngIf="download.value.error"
+                      ><br />Error: {{ download.value.error }}</span
+                    >
+                  </ng-template>
+                </td>
+                <td>
+                  <button
+                    *ngIf="download.value.status == 'error'"
+                    type="button"
+                    class="btn btn-link"
+                    (click)="retryDownload(download.key, download.value)"
+                  >
+                    <fa-icon [icon]="faRedoAlt"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <a
+                    *ngIf="download.value.filename"
+                    href="{{ buildDownloadLink(download.value) }}"
+                    download
+                    ><fa-icon [icon]="faDownload"></fa-icon
+                  ></a>
+                </td>
+                <td>
+                  <a href="{{ download.value.url }}" target="_blank"
+                    ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
+                  ></a>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    (click)="delDownload('done', download.key)"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-lg-2 text-center">
+      <img
+      src="https://avatars.mds.yandex.net/get-direct-picture/103005/rv8LIeDIaaO2ar_lnysovw/orig"
+      loading="lazy"
+      alt=""
+      style=" max-width: 90%; padding-top: 3%"
+    />
+    </div>
+    <div>
+      <hr />
+      <div
+        style="
+          font-weight: bolder;
+          font-size: 1.8rem;
+          text-align: center;
+          margin: 2rem auto;
+        "
+      >
+        <div>How to Use the Video</div>
+        <div style="margin-bottom: 2rem">Downloader</div>
+      </div>
+      <div class="row">
+        <div class="col-md-4" style="text-align: center">
+          <img src="../assets/body/step1.svg" alt="step1" />
+          <div class="instructions-head">1. Copy the video URL</div>
+          <div class="instructions">
+            Copy the URL of the video you want to download
+          </div>
+        </div>
+        <div class="col-md-4" style="text-align: center">
+          <img src="../assets/body/step2.svg" alt="step2" />
+          <div class="instructions-head">2. Paste it in the field</div>
+          <div class="instructions">
+            Paste the URL into the video downloader text field and click the red
+            button
+          </div>
+        </div>
+        <div class="col-md-4" style="text-align: center">
+          <img src="../assets/body/step3.svg" alt="step3" />
+          <div class="instructions-head">3. Download the file</div>
+          <div class="instructions">
+            In just a few seconds you will get the file
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="row">
+        <div class="col-md-6 ">
+          <div class="block_01_card">
+            <div class="block_01_card_img">
+              <div class="relative">
+                <img src="../assets/body/block_01_01.png" alt="" />
+                <div class="block_01_card_img_first">
+                  <img src="../assets/body/block_01_01_1.png" alt="" />
+                </div>
+              </div>
+            </div>
+            <div class="title">광고 차단</div>
+            <div class="description">
+              빠른 속도와 광고 없는 환경에서 방해받지 않고 안전하게 다양한
+              컨텐츠를 이용하세요.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="block_01_card">
+            <div class="block_01_card_img">
+              <div class="relative">
+                <img src="../assets/body/block_01_02.png" alt="" />
+                <div class="block_01_card_img_first">
+                  <img src="../assets/body/block_01_02_2.png" alt="" />
+                </div>
+              </div>
+            </div>
+            <div class="title">동영상 다운로드</div>
+            <div class="description">
+              인기 웹사이트에서 고품질 비디오를 다운로드하세요 스트리밍
+              서비스도 미리 다운받아 끊김없는 시청과 wifi없는 환경에서도
+              자유롭게 시청하세요
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 ">
+          <div class="block_01_card">
+            <div class="title">https 차단우회 접속</div>
+            <div class="description">
+              향상된 보안 기능으로 안전하고 우회접속이 필요한 환경에서 자동
+              on/off 기능으로 편리하게 웹사이트를 접속하세요.
+            </div>
+            <div class="block_02_card">
+              <div class="block_01_card_img">
+                <img src="../assets/body/block_01_03.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 block_02 text-center">
+          <img src="../assets/body/block_02_bg.png" alt="" />
+        </div>
+      </div>
+
+      <hr />
+      <div style="text-align: center">
+        <img
+          src="https://assets-global.website-files.com/62176230ce1307d5713ca09a/652fbb9c9919f88605ec4362_Disney%20image.png"
+          loading="lazy"
+          alt=""
+          style="max-width: 90%; padding-top: 3%"
+        />
+      </div>
+      <footer class="footer">
+        <div>
+          <span>About us</span>
+          <ul style="list-style-type: none">
+            <li>
+              <a href="#" target="_blank" rel="noopener noreferrer">블로그</a>
+            </li>
+            <li>
+              <a href="#" target="_blank" rel="noopener noreferrer"
+                >광고 제휴 문의하기</a
+              >
+            </li>
+            <li>
+              <a href="#" target="_blank" rel="noopener noreferrer">커뮤니티</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <span>Community</span>
+          <ul style="list-style-type: none">
+            <li>
+              <a
+                href="https://www.facebook.com/people/Orora-browser/61558532393945/?mibextid=kFxxJD"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="../assets/footer/fb.svg" alt="svg" /> Facebook</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.instagram.com/ororabrowser/?igsh=MWw4dWhzbTgwdW5jbw%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="../assets/footer/insta.svg" alt="svg" /> Instagram</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img src="../assets/footer/youtube.svg" alt="svg" /> Youtube</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <span>Download</span>
+          <ul style="list-style-type: none">
+            <li>
+              <a href="https://play.google.com/"
+                ><img
+                  style="max-width: 100%"
+                  src="../assets/footer/playstore.jpeg"
+              /></a>
+            </li>
+            <li>
+              <a href="https://microsoft.com/"
+                ><img style="max-width: 100%" src="../assets/footer/win.jpeg"
+              /></a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <ul style="list-style-type: none; text-align: right; margin: auto">
+            <li style="padding-top: 0">
+              <a>
+                <img src="../assets/logo.svg" alt="svg" />
+              </a>
+            </li>
+            <li>
+              <a href="#"
+                >광고는 사라지고 풍부한 비디오: Orora, 원활한 브라우징을 위한
+                관문</a
+              >
+            </li>
+            <li>
+              <a href="#"
+                ><button class="btn btn-primary add-url" style="width: 80%">
+                  Ask question
+                </button></a
+              >
+            </li>
+          </ul>
+        </div>
+      </footer>
+      <hr />
+      <div style="font-size: small; color: #8d8d8d; margin-bottom: 1rem">
+        <span
+          ><img
+            src="../assets/footer/badges.svg"
+            alt="svg"
+            style="margin-right: 20%; max-width: 20%"
+          />©Orora 2024. All rights reserved.</span
+        >
+      </div>
+    </div>
+
+  </div>
+
+  <!-- The Modal -->
+  <div class="modal" tabindex="-1" [ngClass]="{ show: isModalOpen }" (click)="closeModal($event)">
+    <div class="modal-dialog modal-small" (click)="preventClose($event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">오로라 로그인</h5>
+          <button type="button" class="close" aria-label="Close" (click)="closeModal($event)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="w-100">
+            <div class="">
+              <div class="flex justify-center mb-4">
+                <button
+                  class="modal_btn"
+                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'mobile', 'bg-gray-200 text-gray-700': activeTab !== 'mobile' }"
+                  (click)="setActiveTab('mobile')"
+                >
+                  모바일
+                </button>
+                <button
+                  class="modal_btn"
+                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'email', 'bg-gray-200 text-gray-700': activeTab !== 'email' }"
+                  (click)="setActiveTab('email')"
+                >
+                  이메일
+                </button>
+              </div>
+              <ng-container *ngIf="activeTab === 'mobile'; else emailLogin">
+                <div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">휴대폰 번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <img src="https://placehold.co/20x20" alt="Country flag" class="mr-2" />
+                      <select class="border-none outline-none bg-transparent">
+                        <option value="+82">+82</option>
+                      </select>
+                      <input type="text" placeholder="번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent ml-2" />
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #emailLogin>
+                <div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">이메일</label>
+                    <input type="email" placeholder="이메일을 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <div class="checkbox_area mb-4">
+                <label class="checkbox_label">
+                  <input type="checkbox" class="mr-2" /> 로그인 유지
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" class="mr-2" /> 자동 로그인
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" class="mr-2" /> 아이디 저장
+                </label>
+              </div>
+              <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4">로그인</button>
+              <div class="flex justify-between text-sm text-gray-700 mb-4">
+                <a href="#" class="underline">비밀번호 찾기</a>
+                <a href="#" class="underline" (click)="openSignUpModal()">회원가입</a>
+              </div>
+              <button class="w-full bg-black text-white py-2 rounded-lg flex items-center justify-center">
+                <i class="fab fa-google mr-2"></i> 또는 Continue with Google
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- sing up modal  -->
+  
+  <div class="modal" tabindex="-1" [ngClass]="{ show: isSignUpModalOpen }" (click)="closeSignUpModal($event)">
+    <div class="modal-dialog modal-small" (click)="preventClose($event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">오로라 회원가입</h5>
+          <button type="button" class="close" aria-label="Close" (click)="closeSignUpModal($event)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="w-100">
+            <div class="">
+              <div class="mb-4">
+                <label class="block text-gray-700 mb-2">닉네임</label>
+                <input type="text" placeholder="닉네임 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
+              </div>
+              <div class="flex justify-center mb-4">
+                <button
+                  class="modal_btn"
+                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'mobile', 'bg-gray-200 text-gray-700': activeTab !== 'mobile' }"
+                  (click)="setActiveTab('mobile')"
+                >
+                  모바일
+                </button>
+                <button
+                  class="modal_btn"
+                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'email', 'bg-gray-200 text-gray-700': activeTab !== 'email' }"
+                  (click)="setActiveTab('email')"
+                >
+                  이메일
+                </button>
+              </div>
+              <ng-container *ngIf="activeTab === 'mobile'; else emailLogin">
+                <div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">휴대폰 번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <img src="https://placehold.co/20x20" alt="Country flag" class="mr-2" />
+                      <select class="border-none outline-none bg-transparent">
+                        <option value="+82">+82</option>
+                      </select>
+                      <input type="text" placeholder="번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent ml-2" />
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #emailLogin>
+                <div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">이메일</label>
+                    <input type="email" placeholder="이메일을 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+              <div class="checkbox_area mb-4">
+                <label class="checkbox_label">
+                  <input type="checkbox" class="mr-2" /> I’m over 19+
+                </label>
+                <label class="checkbox_label">
+                  <input type="checkbox" class="mr-2" /> 이용약관 및 개인정보 보호정책에 동의합니다
+                </label>
+
+              </div>
+              <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4">회원가입하기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" tabindex="-1" [ngClass]="{ show: isMypageModal }" (click)="closeMaypageModal($event)">
+    <div class="modal-dialog modal-xd" (click)="preventClose($event)">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">오로라 회원가입</h5>
+          <button type="button" class="close" aria-label="Close" (click)="closeMaypageModal($event)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="w-100">
+            <div
+          style="
+            border: solid;
+            border-radius: 15px;
+            border-color: white;
+            background-color: white;
+            margin: 2rem auto;
+          "
+        >
+          <div
+            class="metube-section-header"
+            style="
+              font-weight: bolder;
+              font-size: 1.8rem;
+              font-weight: 300;
+              position: relative;
+              padding: 0.5rem;
+              margin: 0.5rem;
+              overflow: scroll;
+            "
+          >
+            Download
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 1rem">
+                  <app-master-checkbox
+                    #queueMasterCheckbox
+                    [id]="'queue'"
+                    [list]="downloads.queue"
+                    (changed)="queueSelectionChanged($event)"
+                  ></app-master-checkbox>
+                </th>
+                <th scope="col" style="width: 10rem"></th>
+                <th scope="col">
+                  <button
+                    type="button"
+                    class="btn btn-link text-decoration-none px-0 me-4"
+                    disabled
+                    #queueDelSelected
+                    (click)="delSelectedDownloads('queue')"
+                    style="font-size: 0.8rem"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel
+                    selected
+                  </button>
+                </th>
+                <th scope="col" style="width: 14rem">Progress</th>
+                <th scope="col" style="width: 2rem"></th>
+                <th scope="col" style="width: 2rem"></th>
+                <th scope="col" style="width: 2rem"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="
+                  let download of downloads.queue | keyvalue : asIsOrder;
+                  trackBy: identifyDownloadRow
+                "
+                [class.disabled]="download.value.deleting"
+              >
+                <td>
+                  <app-slave-checkbox
+                    [id]="download.key"
+                    [master]="queueMasterCheckbox"
+                    [checkable]="download.value"
+                  ></app-slave-checkbox>
+                </td>
+                <td>
+                  <div *ngIf="download.value.thumbnailUrl">
+                    <img
+                      [src]="download.value.thumbnailUrl"
+                      alt="YouTube Thumbnail"
+                      style="max-width: 10rem; height: auto"
+                    />
+                  </div>
+                </td>
+                <td title="{{ download.value.filename }}">
+                  <span class="down-info">File name:</span>
+                  {{ download.value.title }}
+                  <br />
+                  <span class="down-info">Quality:</span>
+                  {{ download.value.quality }}
+                  <br />
+                  <span class="down-info">Format:</span>
+                  {{ download.value.format }}
+                  <br />
+                  <span class="down-info">Speed:</span>
+                  {{ download.value.speed | speed }}
+                </td>
+                <td>
+                  <ngb-progressbar
+                    height="1.5rem"
+                    [showValue]="download.value.status != 'preparing'"
+                    [striped]="download.value.status == 'preparing'"
+                    [animated]="download.value.status == 'preparing'"
+                    type="success"
+                    [value]="
+                      download.value.status == 'preparing'
+                        ? 100
+                        : (download.value.percent | number : '1.0-0')
+                    "
+                  ></ngb-progressbar>
+                </td>
+                <td>
+                  <button
+                    *ngIf="download.value.status === 'pending'"
+                    type="button"
+                    class="btn btn-link"
+                    (click)="downloadItemByKey(download.key)"
+                  >
+                    <fa-icon [icon]="faDownload"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    (click)="delDownload('queue', download.key)"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <a href="{{ download.value.url }}" target="_blank"
+                    ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
+                  ></a>
+                </td>
+              </tr>
+
+              <!-- Completed section -->
+              <tr
+                *ngFor="
+                  let download of downloads.done | keyvalue : asIsOrder;
+                  trackBy: identifyDownloadRow
+                "
+                [class.disabled]="download.value.deleting"
+              >
+                <td></td>
+                <td>
+                  <div *ngIf="download.value.thumbnailUrl">
+                    <img
+                      [src]="download.value.thumbnailUrl"
+                      alt="YouTube Thumbnail"
+                      style="max-width: 10rem; height: auto"
+                    />
+                  </div>
+                </td>
+                <td>
+                  <div style="display: inline-block; width: 1.5rem">
+                    <fa-icon
+                      *ngIf="download.value.status == 'finished'"
+                      [icon]="faCheckCircle"
+                      class="text-success"
+                    ></fa-icon>
+                    <fa-icon
+                      *ngIf="download.value.status == 'error'"
+                      [icon]="faTimesCircle"
+                      class="text-danger"
+                    ></fa-icon>
+                  </div>
+                  <span
+                    ngbTooltip="{{ download.value.msg }} | {{
+                      download.value.error
+                    }}"
+                    ><a
+                      *ngIf="!!download.value.filename; else noDownloadLink"
+                      href="{{ buildDownloadLink(download.value) }}"
+                      target="_blank"
+                      ><span class="down-info">File name:</span>
+                      {{ download.value.title }}</a
+                    ></span
+                  >
+                  <br />
+                  <span class="down-info">Quality:</span>
+                  {{ download.value.quality }}
+                  <br />
+                  <span class="down-info">Format:</span>
+                  {{ download.value.format }}
+                  <br />
+                  <span *ngIf="download.value.size"
+                    ><span class="down-info">File size:</span>
+                    {{ download.value.size | fileSize }}</span
+                  >
+                  <ng-template #noDownloadLink>
+                    {{ download.value.title }}
+                    <span *ngIf="download.value.msg"
+                      ><br />{{ download.value.msg }}</span
+                    >
+                    <span *ngIf="download.value.error"
+                      ><br />Error: {{ download.value.error }}</span
+                    >
+                  </ng-template>
+                </td>
+                <td>
+                  <button
+                    *ngIf="download.value.status == 'error'"
+                    type="button"
+                    class="btn btn-link"
+                    (click)="retryDownload(download.key, download.value)"
+                  >
+                    <fa-icon [icon]="faRedoAlt"></fa-icon>
+                  </button>
+                </td>
+                <td>
+                  <a
+                    *ngIf="download.value.filename"
+                    href="{{ buildDownloadLink(download.value) }}"
+                    download
+                    ><fa-icon [icon]="faDownload"></fa-icon
+                  ></a>
+                </td>
+                <td>
+                  <a href="{{ download.value.url }}" target="_blank"
+                    ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
+                  ></a>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-link"
+                    (click)="delDownload('done', download.key)"
+                  >
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- /.container -->
