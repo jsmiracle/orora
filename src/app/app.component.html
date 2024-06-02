@@ -613,95 +613,93 @@
   </div>
 
   <!-- The Modal -->
-  <div class="modal" tabindex="-1" [ngClass]="{ show: isModalOpen }" (click)="closeModal($event)">
-    <div class="modal-dialog modal-small" (click)="preventClose($event)">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">오로라 로그인</h5>
-          <button type="button" class="close" aria-label="Close" (click)="closeModal($event)">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="w-100">
-            <div class="">
-              <div class="flex justify-center mb-4">
-                <button
-                  class="modal_btn"
-                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'mobile', 'bg-gray-200 text-gray-700': activeTab !== 'mobile' }"
-                  (click)="setActiveTab('mobile')"
-                >
-                  모바일
-                </button>
-                <button
-                  class="modal_btn"
-                  [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'email', 'bg-gray-200 text-gray-700': activeTab !== 'email' }"
-                  (click)="setActiveTab('email')"
-                >
-                  이메일
-                </button>
-              </div>
-              <ng-container *ngIf="activeTab === 'mobile'; else emailLogin">
-                <div>
-                  <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">휴대폰 번호</label>
-                    <div class="flex items-center border rounded-lg px-3 py-2">
-                      <img src="https://placehold.co/20x20" alt="Country flag" class="mr-2" />
-                      <select class="border-none outline-none bg-transparent">
-                        <option value="+82">+82</option>
-                      </select>
-                      <input type="text" placeholder="번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent ml-2" />
-                    </div>
-                  </div>
-                  <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">비밀번호</label>
-                    <div class="flex items-center border rounded-lg px-3 py-2">
-                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
-                      <i class="fas fa-eye text-gray-500"></i>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-              <ng-template #emailLogin>
-                <div>
-                  <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">이메일</label>
-                    <input type="email" placeholder="이메일을 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
-                  </div>
-                  <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">비밀번호</label>
-                    <div class="flex items-center border rounded-lg px-3 py-2">
-                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
-                      <i class="fas fa-eye text-gray-500"></i>
-                    </div>
-                  </div>
-                </div>
-              </ng-template>
-              <div class="checkbox_area mb-4">
-                <label class="checkbox_label">
-                  <input type="checkbox" class="mr-2" /> 로그인 유지
-                </label>
-                <label class="checkbox_label">
-                  <input type="checkbox" class="mr-2" /> 자동 로그인
-                </label>
-                <label class="checkbox_label">
-                  <input type="checkbox" class="mr-2" /> 아이디 저장
-                </label>
-              </div>
-              <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4">로그인</button>
-              <div class="flex justify-between text-sm text-gray-700 mb-4">
-                <a href="#" class="underline">비밀번호 찾기</a>
-                <a href="#" class="underline" (click)="openSignUpModal()">회원가입</a>
-              </div>
-              <button class="w-full bg-black text-white py-2 rounded-lg flex items-center justify-center">
-                <i class="fab fa-google mr-2"></i> 또는 Continue with Google
+<!-- login-modal.component.html -->
+<div class="modal" tabindex="-1" [ngClass]="{ show: isModalOpen }" (click)="closeModal($event)">
+  <div class="modal-dialog modal-small" (click)="preventClose($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">오로라 로그인</h5>
+        <button type="button" class="close" aria-label="Close" (click)="closeModal($event)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="w-100">
+          <div class="">
+            <div class="flex justify-center mb-4">
+              <button
+                class="modal_btn"
+                [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'mobile', 'bg-gray-200 text-gray-700': activeTab !== 'mobile' }"
+                (click)="setActiveTab('mobile')"
+              >
+                모바일
+              </button>
+              <button
+                class="modal_btn"
+                [ngClass]="{ 'bg-blue-500 text-white': activeTab === 'email', 'bg-gray-200 text-gray-700': activeTab !== 'email' }"
+                (click)="setActiveTab('email')"
+              >
+                이메일
               </button>
             </div>
+            <ng-container *ngIf="activeTab === 'mobile'; else emailLogin">
+              <div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 mb-2">휴대폰 번호</label>
+                  <div class="flex items-center border rounded-lg px-3 py-2">
+                    <input type="text" placeholder="번호를 입력해주세요" [(ngModel)]="phoneNumber" class="flex-1 border-none outline-none bg-transparent ml-2" />
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 mb-2">비밀번호</label>
+                  <div class="flex items-center border rounded-lg px-3 py-2">
+                    <input type="password" placeholder="비밀번호를 입력해주세요" [(ngModel)]="password" class="flex-1 border-none outline-none bg-transparent" />
+                    <i class="fas fa-eye text-gray-500"></i>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #emailLogin>
+              <div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 mb-2">이메일</label>
+                  <input type="email" placeholder="이메일을 입력해주세요" [(ngModel)]="email" class="w-full border rounded-lg px-3 py-2 outline-none" />
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 mb-2">비밀번호</label>
+                  <div class="flex items-center border rounded-lg px-3 py-2">
+                    <input type="password" placeholder="비밀번호를 입력해주세요" [(ngModel)]="password" class="flex-1 border-none outline-none bg-transparent" />
+                    <i class="fas fa-eye text-gray-500"></i>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            <div class="checkbox_area mb-4">
+              <label class="checkbox_label">
+                <input type="checkbox" class="mr-2" /> 로그인 유지
+              </label>
+              <label class="checkbox_label">
+                <input type="checkbox" class="mr-2" /> 자동 로그인
+              </label>
+              <label class="checkbox_label">
+                <input type="checkbox" class="mr-2" /> 아이디 저장
+              </label>
+            </div>
+            <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4" (click)="login()">로그인</button>
+            <div class="flex justify-between text-sm text-gray-700 mb-4">
+              <a href="#" class="underline">비밀번호 찾기</a>
+              <a href="#" class="underline" (click)="openSignUpModal()">회원가입</a>
+            </div>
+            <button class="w-full bg-black text-white py-2 rounded-lg flex items-center justify-center">
+              <i class="fab fa-google mr-2"></i> 또는 Continue with Google
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+
 
   <!-- sing up modal  -->
   
@@ -791,10 +789,11 @@
   </div>
 
   <div class="modal" tabindex="-1" [ngClass]="{ show: isMypageModal }" (click)="closeMaypageModal($event)">
-    <div class="modal-dialog modal-xd" (click)="preventClose($event)">
+
+    <div class="modal-dialog modal-xl" (click)="preventClose($event)">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">오로라 회원가입</h5>
+          <h5 class="modal-title">Downoloads</h5>
           <button type="button" class="close" aria-label="Close" (click)="closeMaypageModal($event)">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -822,7 +821,7 @@
               overflow: scroll;
             "
           >
-            Download
+            
           </div>
           <table class="table">
             <thead>
@@ -836,20 +835,7 @@
                   ></app-master-checkbox>
                 </th>
                 <th scope="col" style="width: 10rem"></th>
-                <th scope="col">
-                  <button
-                    type="button"
-                    class="btn btn-link text-decoration-none px-0 me-4"
-                    disabled
-                    #queueDelSelected
-                    (click)="delSelectedDownloads('queue')"
-                    style="font-size: 0.8rem"
-                  >
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel
-                    selected
-                  </button>
-                </th>
-                <th scope="col" style="width: 14rem">Progress</th>
+           
                 <th scope="col" style="width: 2rem"></th>
                 <th scope="col" style="width: 2rem"></th>
                 <th scope="col" style="width: 2rem"></th>
@@ -892,30 +878,8 @@
                   <span class="down-info">Speed:</span>
                   {{ download.value.speed | speed }}
                 </td>
-                <td>
-                  <ngb-progressbar
-                    height="1.5rem"
-                    [showValue]="download.value.status != 'preparing'"
-                    [striped]="download.value.status == 'preparing'"
-                    [animated]="download.value.status == 'preparing'"
-                    type="success"
-                    [value]="
-                      download.value.status == 'preparing'
-                        ? 100
-                        : (download.value.percent | number : '1.0-0')
-                    "
-                  ></ngb-progressbar>
-                </td>
-                <td>
-                  <button
-                    *ngIf="download.value.status === 'pending'"
-                    type="button"
-                    class="btn btn-link"
-                    (click)="downloadItemByKey(download.key)"
-                  >
-                    <fa-icon [icon]="faDownload"></fa-icon>
-                  </button>
-                </td>
+              
+           
                 <td>
                   <button
                     type="button"
@@ -1006,14 +970,7 @@
                     <fa-icon [icon]="faRedoAlt"></fa-icon>
                   </button>
                 </td>
-                <td>
-                  <a
-                    *ngIf="download.value.filename"
-                    href="{{ buildDownloadLink(download.value) }}"
-                    download
-                    ><fa-icon [icon]="faDownload"></fa-icon
-                  ></a>
-                </td>
+               
                 <td>
                   <a href="{{ download.value.url }}" target="_blank"
                     ><fa-icon [icon]="faExternalLinkAlt"></fa-icon

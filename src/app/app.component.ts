@@ -3,7 +3,7 @@ import { faTrashAlt, faCheckCircle, faTimesCircle, IconDefinition } from '@forta
 import { faRedoAlt, faSun, faMoon, faCircleHalfStroke, faCheck, faExternalLinkAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { CookieService } from 'ngx-cookie-service';
 import { map, Observable, of } from 'rxjs';
-
+import { HttpClient } from '@angular/common/http';
 
 import { Download, DownloadsService, Status } from './downloads.service';
 import { MasterCheckboxComponent } from './master-checkbox.component';
@@ -11,11 +11,16 @@ import { Formats, Format, Quality } from './formats';
 import { Theme, Themes } from './theme';
 import { KeyValue } from '@angular/common';
 
+interface LoginRequest {
+  email?: string;
+  phoneNumber?: string;
+  password: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.sass'],
-
 })
 export class AppComponent implements AfterViewInit {
   addUrl: string;
@@ -39,8 +44,6 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('doneClearFailed') doneClearFailed: ElementRef;
   @ViewChild('doneRetryFailed') doneRetryFailed: ElementRef;
 
-
-  
   faTrashAlt = faTrashAlt;
   faCheckCircle = faCheckCircle;
   faTimesCircle = faTimesCircle;
@@ -52,7 +55,11 @@ export class AppComponent implements AfterViewInit {
   faDownload = faDownload;
   faExternalLinkAlt = faExternalLinkAlt;
 
-  constructor(public downloads: DownloadsService, private cookieService: CookieService) {
+  constructor(
+    public downloads: DownloadsService,
+    private cookieService: CookieService,
+    private http: HttpClient
+  ) {
     this.format = cookieService.get('metube_format') || 'any';
     this.setQualities();
     this.quality = cookieService.get('metube_quality') || 'best';
@@ -63,8 +70,6 @@ export class AppComponent implements AfterViewInit {
     }
 
     this.activeTheme = this.getPreferredTheme(cookieService);
-    // шуни очсанг логин богандек коринади
-    // localStorage.setItem('token', 'your-token-here');
   }
 
   ngOnInit() {
@@ -78,6 +83,7 @@ export class AppComponent implements AfterViewInit {
       }
     });
   }
+
   checkToken() {
     this.hasToken = !!localStorage.getItem('token');
   }
@@ -268,7 +274,8 @@ export class AppComponent implements AfterViewInit {
   identifyDownloadRow(index: number, row: KeyValue<string, Download>) {
     return row.key;
   }
-  
+
+  // Login related code
   isModalOpen = false;
   isSignUpModalOpen = false;
   isMypageModal = true;
@@ -276,11 +283,14 @@ export class AppComponent implements AfterViewInit {
 
   hasToken: boolean = false;
 
-
+  loginEmail: string;
+  loginPhoneNumber: string;
+  loginPassword: string;
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
   }
+
   openModal() {
     this.isModalOpen = true;
   }
@@ -293,20 +303,25 @@ export class AppComponent implements AfterViewInit {
   preventClose(event: MouseEvent) {
     event.stopPropagation();
   }
+
   openSignUpModal() {
     this.isSignUpModalOpen = true;
   }
+
   openMypageModal() {
     this.isMypageModal = true;
   }
+
   closeSignUpModal(event: Event) {
     this.isSignUpModalOpen = false;
     event.stopPropagation();
   }
+
   closeMaypageModal(event: Event) {
     this.isMypageModal = false;
     event.stopPropagation();
   }
+
   isScrolled = false;
 
   @HostListener('window:scroll', [])
@@ -315,30 +330,22 @@ export class AppComponent implements AfterViewInit {
     this.isScrolled = scrollTop > 20;
   }
 
-  code: string[] = ['', '', '', '', '', ''];
-
-  focusNextInput(index: number) {
-    if (index < this.code.length - 1 && this.code[index]) {
-      const nextInput = document.querySelector(`input:nth-of-type(${index + 2})`) as HTMLInputElement;
-      if (nextInput) {
-        nextInput.focus();
+  // Methods for login
+  login() {
+    const loginData: LoginRequest = this.loginPhoneNumber ? { phoneNumber: this.loginPhoneNumber, password: this.loginPassword } : { email: this.loginEmail, password: this.loginPassword };
+    this.http.post('https://api.ororabrowser.com/api/user/login', loginData).subscribe((response: any) => {
+      if (response.token) {
+        localStorage.setItem('token', response.token);
+        this.hasToken = true;
+        this.closeModal(new MouseEvent('click'));
+      } else {
+        alert('Login failed');
       }
-    }
-  }
-  resendCode() {
-    console.log('Code resent');
-    // Add logic to resend the code
-  }
-
-  verifyCode() {
-    const enteredCode = this.code.join('');
-    console.log('Entered code:', enteredCode);
-    // Add logic to verify the code
+    });
   }
 }
 
-function getQueryParameter(name) {
+function getQueryParameter(name: string): string | null {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(name);
 }
-
