@@ -278,7 +278,7 @@ export class AppComponent implements AfterViewInit {
   // Login related code
   isModalOpen = false;
   isSignUpModalOpen = false;
-  isMypageModal = true;
+  isMypageModal = false;
   activeTab: string = 'mobile';
 
   hasToken: boolean = false;
