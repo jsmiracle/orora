@@ -84,6 +84,8 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
+
+  
   checkToken() {
     this.hasToken = !!localStorage.getItem('token');
   }
