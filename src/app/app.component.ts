@@ -285,6 +285,10 @@ export class AppComponent implements AfterViewInit {
 
   hasToken: boolean = false;
 
+
+  phoneNumber: string = '';
+  email: string = '';
+  password: string = '';
   loginEmail: string;
   loginPhoneNumber: string;
   loginPassword: string;
@@ -334,7 +338,10 @@ export class AppComponent implements AfterViewInit {
 
   // Methods for login
   login() {
-    const loginData: LoginRequest = this.loginPhoneNumber ? { phoneNumber: this.loginPhoneNumber, password: this.loginPassword } : { email: this.loginEmail, password: this.loginPassword };
+    const loginData: LoginRequest = this.activeTab === 'mobile' 
+      ? { phoneNumber: this.phoneNumber, password: this.password } 
+      : { email: this.email, password: this.password };
+
     this.http.post('https://api.ororabrowser.com/api/user/login', loginData).subscribe((response: any) => {
       if (response.token) {
         localStorage.setItem('token', response.token);

@@ -50,11 +50,13 @@
               background-clip: text;
               -webkit-text-fill-color: transparent;
               white-space: pre-wrap;
+              display: flex;justify-content: center;align-items: center;
             "
             _ngcontent-ng-c2310961675=""
             class="page-title"
           >
-            오로라 다운로드
+          <img style="width: 75px; " src="../assets/icons/mstile-150x150.png" alt="">
+            오로라 다운로더
           </div>
           <div class="container add-url-box">
             <div class="row">
@@ -198,16 +200,15 @@
                     disabled
                     #queueDelSelected
                     (click)="delSelectedDownloads('queue')"
-                    style="font-size: 0.8rem"
+                    style="font-size: 0.8rem; width: 10rem;"
                   >
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel
-                    selected
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 선텍삭제
                   </button>
                 </th>
                 <th scope="col" style="width: 14rem">Progress</th>
                 <th scope="col" style="width: 2rem"></th>
-                <th scope="col">바로가기</th>
-                <th scope="col">삭제</th>
+                <th scope="col" style="width: 5rem">바로가기</th>
+                <th scope="col" style="width: 5rem">삭제</th>
               </tr>
             </thead>
             <tbody>
@@ -234,9 +235,15 @@
                     />
                   </div>
                 </td>
-                <td title="{{ download.value.filename }}">
+                <td title="{{ download.value.filename }}" >
                   <span class="down-info">File name:</span>
-                  {{ download.value.title }}
+                  <span   style="overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                  max-width: 191px !important;
+                  display: block;">
+                    {{ download.value.title }}
+                  </span>
                   <br />
                   <span class="down-info">Quality:</span>
                   {{ download.value.quality }}
@@ -556,6 +563,11 @@
             <li>
               <a href="https://microsoft.com/"
                 ><img style="max-width: 100%" src="../assets/footer/win.jpeg"
+              /></a>
+            </li>
+            <li>
+              <a href="https://www.apple.com/app-store/"
+              ><img style="max-width: 100%" src="../assets/footer/apple.jpeg"
               /></a>
             </li>
           </ul>
