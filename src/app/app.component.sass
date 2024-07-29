@@ -433,3 +433,23 @@ img
 //  .title 
 // 	font-size: 18px 
 // 	margin: 10px 0 0 
+
+
+.clamp-2 
+  display: -webkit-box
+  -webkit-line-clamp: 2
+  -webkit-box-orient: vertical
+  overflow: hidden
+  text-overflow: ellipsis
+
+@media (max-width: 900px)
+  .responsive-flex
+    flex-direction: column !important
+    .search-block
+      width: 90% !important
+      margin: 0 auto
+  
+  .card-img
+    max-width: 100px
+    height: auto
+    margin: 0 auto

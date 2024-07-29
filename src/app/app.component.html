@@ -11,12 +11,14 @@
       </div>
       <div class="offcanvas-body">
         <ul *ngIf="hasToken" class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="#">Downloads</a>
+          <li class="nav-item fs-6">
+            <a data-bs-dismiss="offcanvas" aria-label="Close" (click)="openDownloadsModal()" class="nav-link " aria-current="page" href="#">Downloads</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Settings</a>
-            
+          <li class="nav-item fs-6">
+            <a data-bs-dismiss="offcanvas" aria-label="Close" (click)="openAccountModal()" class="nav-link" href="#">Account</a>
+          </li>
+          <li class="nav-item fs-6">
+            <a data-bs-dismiss="offcanvas" aria-label="Close" class="nav-link" href="#" (click)="logout()">Logout</a>
           </li>
         </ul>
         <form *ngIf="!hasToken" class="d-flex mt-3 header_btns" role="search">
@@ -92,20 +94,24 @@
                 </div>
               </div>
               <div class="col-md-4 add-url-component">
-                <div class="input-group">
-                  <span class="input-group-text">포맷</span>
-                  <select
-                    class="form-select"
-                    name="format"
-                    [(ngModel)]="format"
-                    (change)="formatChanged()"
-                    [disabled]="addInProgress || downloads.loading"
-                  >
-                    <option *ngFor="let f of formats" [ngValue]="f.id">
-                      {{ f.text }}
-                    </option>
-                  </select>
-                </div>
+                  <div class="flex justify-center mb-4">
+                    <button
+                      class="btn"
+                      [ngClass]="{ 'bg-blue-500 text-white': format === 'mp4', 'bg-gray-200 text-gray-700': format !== 'mp4' }"
+                      [disabled]="addInProgress || downloads.loading"
+                      (click)="selectFormat('mp4')"
+                    >
+                      video
+                    </button>
+                    <button
+                      class="btn"
+                      [ngClass]="{ 'bg-blue-500 text-white': format === 'mp3', 'bg-gray-200 text-gray-700': format !== 'mp3' }"
+                      [disabled]="addInProgress || downloads.loading"
+                      (click)="selectFormat('mp3')"
+                    >
+                      audio
+                    </button>
+                  </div>
               </div>
               <div class="col-md-4 add-url-component" style="display: none">
                 <div class="input-group">
@@ -145,7 +151,7 @@
                       *ngIf="addInProgress"
                     ></span>
                     <fa-icon [icon]="faDownload"></fa-icon>
-                    {{ addInProgress ? "다운로드 중..." : "다운로드" }}
+                    {{ addInProgress ? "다운로드 중..." : "다운로드 리스트 추가" }}
                   </button>
                 </div>
               </div>
@@ -373,6 +379,7 @@
                     *ngIf="download.value.filename"
                     href="{{ buildDownloadLink(download.value) }}"
                     download
+                    (click)="addToDownloadsHistory(download.value)"
                     ><fa-icon [icon]="faDownload"></fa-icon
                   ></a>
                 </td>
@@ -609,6 +616,44 @@
 
   </div>
 
+<!-- Verification Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{ show: isVerificationModalOpen }" (click)= "closeVerificationModal($event)">
+  <div class="modal-dialog modal-small" (click)="preventClose($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">{{activeTab === 'mobile' ? '휴대폰 인증' : '이메일 인증'}}</h3>
+        <button type="button" class="close" aria-label="Close" (click)="closeVerificationModal($event)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="!verificationLoading; else loadingIndicator">
+        <ng-container *ngIf="activeTab === 'mobile'; else emailVerification">
+          <h4 class="fw-bold text-center mb-2">+ {{phoneNumber}}</h4>
+          <div class="block text-gray-700 mb-4 text-center">번호로 받은 5자리 코드를 입력하세요</div>
+        </ng-container>
+        <ng-template #emailVerification>
+          <h4 class="fw-bold text-center mb-2">{{email}}</h4>
+          <div class="block text-gray-700 mb-4 text-center">이메일 주소로 받은 5자리 코드를 입력하세요.</div>
+        </ng-template>
+          <div class="mb-4">
+            <ng-otp-input
+              class="text-center"
+              [config]="{length: 5, allowNumbersOnly: true}"
+              (onInputChange)="onOtpChange($event)">
+            </ng-otp-input>
+          </div>
+          <button class="btn btn-primary w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4" (click)="verify()">확인</button>
+      </div>
+      <ng-template #loadingIndicator>
+        <div class="text-center m-4">
+          <div class="spinner-border" role="status">
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
   <!-- The Modal -->
 <!-- login-modal.component.html -->
 <div class="modal" tabindex="-1" [ngClass]="{ show: isModalOpen }" (click)="closeModal($event)">
@@ -643,9 +688,11 @@
               <div>
                 <div class="mb-4">
                   <label class="block text-gray-700 mb-2">휴대폰 번호</label>
-                  <div class="flex items-center border rounded-lg px-3 py-2">
-                    <input type="text" placeholder="번호를 입력해주세요" [(ngModel)]="phoneNumber" class="flex-1 border-none outline-none bg-transparent ml-2" />
-                  </div>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <img src="../assets/flags/korea.png" width="30" height="20" alt="Country flag" class="mr-2" />
+                      <span>+</span>
+                      <input type="text" placeholder="번호를 입력해주세요" [(ngModel)]="phoneNumber" class="flex-1 border-none outline-none bg-transparent ml-2" />
+                    </div>
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 mb-2">비밀번호</label>
@@ -656,7 +703,7 @@
                 </div>
               </div>
             </ng-container>
-            <ng-template >
+            <ng-template #emailLogin >
               <div>
                 <div class="mb-4">
                   <label class="block text-gray-700 mb-2">이메일</label>
@@ -687,9 +734,9 @@
               <a href="#" class="underline">비밀번호 찾기</a>
               <a href="#" class="underline" (click)="openSignUpModal()">회원가입</a>
             </div>
-            <button class="w-full bg-black text-white py-2 rounded-lg flex items-center justify-center">
+            <!-- <button class="w-full bg-black text-white py-2 rounded-lg flex items-center justify-center">
               <i class="fab fa-google mr-2"></i> 또는 Continue with Google
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
@@ -699,7 +746,7 @@
 
 
   <!-- sing up modal  -->
-  
+
   <div class="modal" tabindex="-1" [ngClass]="{ show: isSignUpModalOpen }" (click)="closeSignUpModal($event)">
     <div class="modal-dialog modal-small" (click)="preventClose($event)">
       <div class="modal-content">
@@ -714,7 +761,7 @@
             <div class="">
               <div class="mb-4">
                 <label class="block text-gray-700 mb-2">닉네임</label>
-                <input type="text" placeholder="닉네임 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
+                <input type="text" [(ngModel)]="username" placeholder="닉네임 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
               </div>
               <div class="flex justify-center mb-4">
                 <button
@@ -737,17 +784,22 @@
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">휴대폰 번호</label>
                     <div class="flex items-center border rounded-lg px-3 py-2">
-                      <img src="https://placehold.co/20x20" alt="Country flag" class="mr-2" />
-                      <select class="border-none outline-none bg-transparent">
-                        <option value="+82">+82</option>
-                      </select>
-                      <input type="text" placeholder="번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent ml-2" />
+                      <img src="../assets/flags/korea.png" width="30" height="20" alt="Country flag" class="mr-2" />
+                      <span>+</span>
+                      <input type="text" [(ngModel)]="phoneNumber" placeholder="번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent ml-2" />
                     </div>
                   </div>
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">비밀번호</label>
                     <div class="flex items-center border rounded-lg px-3 py-2">
-                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <input type="password" [(ngModel)]="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호 확인</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" [(ngModel)]="confirmPassword" placeholder="비밀번호 확인을 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
                       <i class="fas fa-eye text-gray-500"></i>
                     </div>
                   </div>
@@ -757,12 +809,19 @@
                 <div>
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">이메일</label>
-                    <input type="email" placeholder="이메일을 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
+                    <input type="email" [(ngModel)]="email" placeholder="이메일을 입력해주세요" class="w-full border rounded-lg px-3 py-2 outline-none" />
                   </div>
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">비밀번호</label>
                     <div class="flex items-center border rounded-lg px-3 py-2">
-                      <input type="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <input type="password" [(ngModel)]="password" placeholder="비밀번호를 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
+                      <i class="fas fa-eye text-gray-500"></i>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">비밀번호 확인</label>
+                    <div class="flex items-center border rounded-lg px-3 py-2">
+                      <input type="password" [(ngModel)]="confirmPassword" placeholder="비밀번호 확인을 입력해주세요" class="flex-1 border-none outline-none bg-transparent" />
                       <i class="fas fa-eye text-gray-500"></i>
                     </div>
                   </div>
@@ -770,14 +829,10 @@
               </ng-template>
               <div class="checkbox_area mb-4">
                 <label class="checkbox_label">
-                  <input type="checkbox" class="mr-2" /> I’m over 19+
+                  <input type="checkbox" [(ngModel)]="isPrivacyPolicyAccepted" class="mr-2" /> 이용약관 및 개인정보 보호정책에 동의합니다
                 </label>
-                <label class="checkbox_label">
-                  <input type="checkbox" class="mr-2" /> 이용약관 및 개인정보 보호정책에 동의합니다
-                </label>
-
               </div>
-              <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4">회원가입하기</button>
+              <button class="w-full bg-gray-300 text-gray-700 py-2 rounded-lg mb-4" (click)="register()" >회원가입하기</button>
             </div>
           </div>
         </div>
@@ -785,9 +840,128 @@
     </div>
   </div>
   
+<!-- Account Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{ show: isAccountModalOpen }" (click)="closeAccountModal($event)">
+  <div class="modal-dialog" (click)="preventClose($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Account</h3>
+        <button type="button" class="close" aria-label="Close" (click)="closeAccountModal($event)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="isAccountLoading || !userInfo" class="text-center m-4">
+          <div class="spinner-border" role="status">
+          </div>
+        </div>
+        <div *ngIf="!isAccountLoading && userInfo">
+          <div class="mb-3">
+            <label for="username" class="form-label fw-bold">닉네임</label>
+            <div id="username">{{userInfo.username}}</div>
+          </div>
+          <div *ngIf="userInfo.phonenumber" class="mb-3">
+            <label for="phoneNumber" class="form-label fw-bold">휴대폰 번호</label>
+            <div id="phoneNumber">{{userInfo.phonenumber}}</div>
+          </div>
+          <div *ngIf="userInfo.email" class="mb-3">
+            <label for="email" class="form-label fw-bold">이메일</label>
+            <div id="email">{{userInfo.email}}</div>
+          </div>
+          <button type="button" class="btn btn-primary mt-4" (click)="togglePasswordChange()">
+            {{ isPasswordChangeVisible ? '취소' : '비밀번호 변경' }}
+          </button>
+          <div *ngIf="isPasswordChangeVisible" class="mt-3">
+            <div class="mb-3">
+              <label for="oldPassword" class="form-label fw-bold">현재 비밀번호</label>
+              <input type="password" class="form-control" id="oldPassword" [(ngModel)]="oldPassword">
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label fw-bold">새 비밀번호</label>
+              <input type="password" class="form-control" id="newPassword" [(ngModel)]="newPassword">
+            </div>
+            <button type="button" class="btn btn-success" (click)="changePassword()">확인하다</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Downloads Modal -->
+<div class="modal" tabindex="-1" [ngClass]="{ show: isDownloadsModalOpen }" (click)="closeDownloadsModal($event)">
+  <div class="modal-dialog modal-lg" (click)="preventClose($event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Downloads</h3>
+        <button type="button" class="close" aria-label="Close" (click)="closeDownloadsModal($event)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="height: 80vh; overflow-y: auto;">
+        <div *ngIf="downloadHistoryTotal || isSearching()" class="d-flex responsive-flex justify-content-between align-items-center mb-4 gap-3">
+          <button class="btn btn-primary" (click)="clearAllDownloadsHistory()">
+            모두 지우기
+          </button>
+          <div class="d-flex align-items-center gap-1 search-block" style="width: 50%;">
+            <input 
+              type="search"
+              [(ngModel)]="downloadHistorySearchTerm"
+              (ngModelChange)="onSearchTermChange($event)"
+              class="form-control shadow-none"
+              placeholder="찾다"
+            />
+          </div>
+        </div>
+        <div *ngIf="isDownloadHistoryLoading" class="d-flex justify-content-center align-items-center mt-5">
+          <div class="spinner-border" role="status">
+          </div>
+        </div>
+        <div *ngIf="!isDownloadHistoryLoading">
+          <div *ngFor="let download of downloadsHistory | paginate: { itemsPerPage: downloadHistoryLimit, currentPage: downloadHistoryPage, totalItems: downloadHistoryTotal }" class="card p-3 mb-2">
+            <div class="row no-gutters">
+              <div class="col-md-2 d-flex justify-content-right align-items-center">
+                <img src={{download.thumbnailUrl}} class="card-img" alt="icon">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title clamp-2">{{download.title}}</h5>
+                  <div class="card-text">
+                    <span class="text-muted">{{download.format}} | {{formatBytes(download.size)}}</span>
+                  </div>
+                  <div class="card-text">
+                    <span class="text-muted">{{formatDate(download.createdAt)}}</span>
+                  </div>
+                  <p class="card-text text-truncate"><a href={{download.url}} target="_blank">{{download.url}}</a></p>
+                </div>
+              </div>
+              <div class="col-md-2 d-flex justify-content-end align-items-center">
+                <button class="btn btn-danger" (click)="deleteDownloadHistory(download.id)">
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!isSearching()" class="mt-4">
+            <pagination-controls
+            [autoHide]="true"
+            [responsive]="true"
+            previousLabel=""
+            nextLabel=""
+            (pageChange)="onPageChange($event)">
+          </pagination-controls>
+          </div>
+        </div>
+        <div *ngIf="!downloadHistoryTotal && !isSearching()" class="fw-bold text-center">
+          다운로드 기록이 여기에 표시됩니다
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- downloadmodal -->
   <div class="modal" tabindex="-1" [ngClass]="{ show: isMypageModal }" (click)="closeMaypageModal($event)">
-
     <div class="modal-dialog modal-xl" (click)="preventClose($event)">
       <div class="modal-content">
         <div class="modal-header">
@@ -994,3 +1168,4 @@
   </div>
 </main>
 <!-- /.container -->
+ 

@@ -12,6 +12,8 @@ import { MasterCheckboxComponent, SlaveCheckboxComponent } from './master-checkb
 import { MeTubeSocket } from './metube-socket';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgOtpInputModule } from 'ng-otp-input';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     HttpClientModule,
     FontAwesomeModule,
     NgSelectModule,
+    NgOtpInputModule,
+    NgxPaginationModule,
     ServiceWorkerModule.register('custom-service-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
