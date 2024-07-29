@@ -203,7 +203,7 @@ export class AppComponent implements AfterViewInit {
       await this.searchDownloadsHistory()
     }
 
-    if(newValue.length === 0 || newValue.trim()) {
+    if(newValue.length === 0 || newValue.trim().length === 0) {
       this.getDownloadsHistory();
     }
   }
@@ -719,12 +719,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   async searchDownloadsHistory() {
-    if(!this.isSearching()) {
-      this.getDownloadsHistory();
-      return;
-    }
-
-    
     this.downloadHistoryPage = 1;
     this.downloadHistoryTotal = 0;
     this.downloadsHistory = [];
