@@ -779,7 +779,7 @@
                   이메일
                 </button>
               </div>
-              <ng-container *ngIf="activeTab === 'mobile'; else emailLogin">
+              @if(activeTab === 'mobile') {
                 <div>
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">휴대폰 번호</label>
@@ -804,8 +804,8 @@
                     </div>
                   </div>
                 </div>
-              </ng-container>
-              <ng-template #emailLogin>
+              }
+              @else {
                 <div>
                   <div class="mb-4">
                     <label class="block text-gray-700 mb-2">이메일</label>
@@ -826,7 +826,7 @@
                     </div>
                   </div>
                 </div>
-              </ng-template>
+              }
               <div class="checkbox_area mb-4">
                 <label class="checkbox_label">
                   <input type="checkbox" [(ngModel)]="isPrivacyPolicyAccepted" class="mr-2" /> 이용약관 및 개인정보 보호정책에 동의합니다
