@@ -96,20 +96,20 @@
               <div class="col-md-4 add-url-component">
                   <div class="flex justify-center mb-4">
                     <button
-                      class="btn"
-                      [ngClass]="{ 'bg-blue-500 text-white': format === 'mp4', 'bg-gray-200 text-gray-700': format !== 'mp4' }"
+                      class="btn doa"
+                      [ngClass]="{ 'cbbgc btn-primary': format === 'mp4', 'border-2 cbbrc': format !== 'mp4' }"
                       [disabled]="addInProgress || downloads.loading"
                       (click)="selectFormat('mp4')"
                     >
-                      video
+                      비디오
                     </button>
                     <button
-                      class="btn"
-                      [ngClass]="{ 'bg-blue-500 text-white': format === 'mp3', 'bg-gray-200 text-gray-700': format !== 'mp3' }"
+                      class="btn doa"
+                      [ngClass]="{ 'cbbgc btn-primary': format === 'mp3', 'border-2 cbbrc': format !== 'mp3' }"
                       [disabled]="addInProgress || downloads.loading"
                       (click)="selectFormat('mp3')"
                     >
-                      audio
+                      오디오
                     </button>
                   </div>
               </div>
