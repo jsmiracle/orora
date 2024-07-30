@@ -190,17 +190,17 @@
             <thead>
               <tr>
                 <th scope="col" style="width: 1rem">
-                  <app-master-checkbox
+                  <!-- <app-master-checkbox
                     #queueMasterCheckbox
                     [id]="'queue'"
                     [list]="downloads.queue"
                     (changed)="queueSelectionChanged($event)"
-                  ></app-master-checkbox>
+                  ></app-master-checkbox> -->
 
                 </th>
-                <th scope="col" style="width: 10rem"> 전체선택</th>
+                <th scope="col" style="width: 10rem"></th>
                 <th scope="col">
-                  <button
+                  <!-- <button
                     type="button"
                     class="btn btn-link text-decoration-none px-0 me-4"
                     disabled
@@ -209,12 +209,12 @@
                     style="font-size: 0.8rem; width: 10rem;"
                   >
                     <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 선택삭제
-                  </button>
+                  </button> -->
                 </th>
-                <th scope="col" style="width: 14rem">Progress</th>
+                <th scope="col" style="width: 14rem"></th>
                 <th scope="col" style="width: 2rem"></th>
-                <th scope="col" style="width: 5rem">바로가기</th>
-                <th scope="col" style="width: 5rem">삭제</th>
+                <th scope="col" style="width: 5rem"></th>
+                <th scope="col" style="width: 5rem"></th>
               </tr>
             </thead>
             <tbody>
@@ -293,11 +293,11 @@
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
                 </td>
-                <td>
+                <!-- <td>
                   <a href="{{ download.value.url }}" target="_blank"
                     ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
                   ></a>
-                </td>
+                </td> -->
               </tr>
 
               <!-- Completed section -->
@@ -364,30 +364,48 @@
                     >
                   </ng-template>
                 </td>
-                <td>
-                  <button
-                    *ngIf="download.value.status == 'error'"
-                    type="button"
-                    class="btn btn-link"
-                    (click)="retryDownload(download.key, download.value)"
-                  >
-                    <fa-icon [icon]="faRedoAlt"></fa-icon>
-                  </button>
+                <td style="text-align: center;">
+                  @if(download.value.status == 'error') {
+                    <button
+                      *ngIf="download.value.status == 'error'"
+                      type="button"
+                      class="btn btn-link"
+                      (click)="retryDownload(download.key, download.value)"
+                    >
+                      <fa-icon [icon]="faRedoAlt"></fa-icon>
+                    </button>
+                  }
+                  @else {
+                    <a
+                      *ngIf="download.value.filename"
+                      class="btn btn-primary add-url text-white"
+                      style="border-radius: 0.375rem"
+                      type="submit"
+                      href="{{ buildDownloadLink(download.value) }}"
+                      (click)="addToDownloadsHistory(download.value)"
+                      [disabled]="addInProgress || downloads.loading"
+                      style="width: 60%;"
+                      download
+                    >
+                      <fa-icon [icon]="faDownload"></fa-icon>
+                      다운로드
+                  </a>
+                  }
                 </td>
                 <td>
-                  <a
+                  <!-- <a
                     *ngIf="download.value.filename"
                     href="{{ buildDownloadLink(download.value) }}"
                     download
                     (click)="addToDownloadsHistory(download.value)"
                     ><fa-icon [icon]="faDownload"></fa-icon
-                  ></a>
+                  ></a> -->
                 </td>
-                <td>
+                <!-- <td>
                   <a href="{{ download.value.url }}" target="_blank"
                     ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
                   ></a>
-                </td>
+                </td> -->
                 <td>
                   <button
                     type="button"
@@ -1061,11 +1079,11 @@
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
                 </td>
-                <td>
+                <!-- <td>
                   <a href="{{ download.value.url }}" target="_blank"
                     ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
                   ></a>
-                </td>
+                </td> -->
               </tr>
 
               <!-- Completed section -->
@@ -1143,11 +1161,11 @@
                   </button>
                 </td>
                
-                <td>
+                <!-- <td>
                   <a href="{{ download.value.url }}" target="_blank"
                     ><fa-icon [icon]="faExternalLinkAlt"></fa-icon
                   ></a>
-                </td>
+                </td> -->
                 <td>
                   <button
                     type="button"
