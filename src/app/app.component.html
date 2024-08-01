@@ -158,7 +158,42 @@
             </div>
           </div>
         </form>
+        <div
+          style="
+            font-weight: bolder;
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 1rem auto;
+          "
+        >
+          <div>지원되는 리소스</div>
+        </div>
+        <div class="container">
+          <div class="d-flex justify-content-center flex-column flex-md-row align-items-center">
+            <a href="https://youtube.com" target="_blank" class="btn btn-danger my-2 mx-md-2 text-white d-flex align-items gap-1 justify-content-center" style="width: 160px;">
+              <img src="../assets/icons/youtube.svg" alt="youtube">
+              YouTube
+            </a>
+            <a href="https://instagram.com/" target="_blank" class="btn btn-danger my-2 mx-md-2 text-white d-flex align-items gap-1 text-center justify-content-center" style="background-color: #C13584; border-color: #C13584; width: 160px;">
+              <img src="../assets/icons/instagram.svg" alt="instagram">
+              Instagram
+            </a>
+            <a href="https://soundcloud.com/" target="_blank" class="btn btn-warning my-2 mx-md-2 text-white d-flex align-items gap-1 justify-content-center" style="background-color: #FF5500; border-color: #FF5500; width: 160px;">
+              <img src="../assets/icons/soundcloud.svg" alt="soundcloud">
+              SoundCloud
+            </a>
+          </div>
+        </div>
 
+        <div class="mt-5 mb-5 bg-white pt-3 pb-3">
+          <ngx-slick-carousel class="carousel" [config]="slideConfig">
+            <div ngxSlickItem *ngFor="let slide of brands">
+              <a [href]="slide.url" target="_blank">
+                <img [src]="slide.image" alt="Image">
+              </a>
+            </div>
+          </ngx-slick-carousel>
+        </div>
         <div *ngIf="downloads.loading" class="alert alert-info" role="alert">
           Connecting to server...
         </div>
@@ -198,7 +233,7 @@
                   ></app-master-checkbox> -->
 
                 </th>
-                <th scope="col" style="width: 10rem"></th>
+                <th scope="col" style="width: 8rem"></th>
                 <th scope="col">
                   <!-- <button
                     type="button"
@@ -211,10 +246,10 @@
                     <fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; 선택삭제
                   </button> -->
                 </th>
-                <th scope="col" style="width: 14rem"></th>
+                <th scope="col" style="width: 22rem"></th>
                 <th scope="col" style="width: 2rem"></th>
                 <th scope="col" style="width: 5rem"></th>
-                <th scope="col" style="width: 5rem"></th>
+                <!-- <th scope="col" style="width: 5rem"></th> -->
               </tr>
             </thead>
             <tbody>
@@ -242,22 +277,13 @@
                   </div>
                 </td>
                 <td title="{{ download.value.filename }}" >
-                  <span class="down-info">File name:</span>
-                  <span   style="overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                  max-width: 191px !important;
-                  display: block;">
+                  <!-- <span class="down-info">File name:</span> -->
+                  <span class="clamp-2">
                     {{ download.value.title }}
                   </span>
                   <br />
-                  <span class="down-info">Quality:</span>
-                  {{ download.value.quality }}
-                  <br />
-                  <span class="down-info">Format:</span>
-                  {{ download.value.format }}
-                  <br />
-                  <span class="down-info">Speed:</span>
+                  {{ download.value.quality }} /
+                  {{ download.value.format }} /
                   {{ download.value.speed | speed }}
                 </td>
                 <td>
@@ -319,7 +345,7 @@
                   </div>
                 </td>
                 <td>
-                  <div style="display: inline-block; width: 1.5rem">
+                  <!-- <div style="display: inline-block; width: 1.5rem">
                     <fa-icon
                       *ngIf="download.value.status == 'finished'"
                       [icon]="faCheckCircle"
@@ -330,29 +356,26 @@
                       [icon]="faTimesCircle"
                       class="text-danger"
                     ></fa-icon>
-                  </div>
+                  </div> -->
                   <span
                     ngbTooltip="{{ download.value.msg }} | {{
                       download.value.error
                     }}"
+                    class="clamp-2"
                     ><a
                       *ngIf="!!download.value.filename; else noDownloadLink"
                       href="{{ buildDownloadLink(download.value) }}"
                       target="_blank"
-                      ><span class="down-info">File name:</span>
+                      >
+                      <!-- <span class="down-info">File name:</span> -->
                       {{ download.value.title }}</a
                     ></span
                   >
                   <br />
-                  <span class="down-info">Quality:</span>
-                  {{ download.value.quality }}
-                  <br />
-                  <span class="down-info">Format:</span>
+                  {{ download.value.quality }} /
                   {{ download.value.format }}
-                  <br />
-                  <span *ngIf="download.value.size"
-                    ><span class="down-info">File size:</span>
-                    {{ download.value.size | fileSize }}</span
+                  <span *ngIf="download.value.size">
+                    / {{ download.value.size | fileSize }}</span
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}
@@ -444,25 +467,46 @@
           <img src="../assets/body/step1.svg" alt="step1" />
           <div class="instructions-head">1. 비디오 URL을 복사하세요</div>
           <div class="instructions">
-            다운로드하려는 비디오의 URL을 복사하세요.
+            오로라 브라우저를 통하여 지원되는 리소스에 접속하여 다운로드 버튼을 눌러주거나 url을 복사하세요.
           </div>
         </div>
         <div class="col-md-4" style="text-align: center">
           <img src="../assets/body/step2.svg" alt="step2" />
           <div class="instructions-head">2. 필드에 붙여넣기</div>
           <div class="instructions">
-            비디오 다운로더 텍스트 필드에 URL을 붙여넣고 다운로드 버튼을 클릭하세요.
+            텍스트 필드에 URL을 붙여넣거나 Ororabrowser를 통해 원하는 영상/음악에 제공되는 download 버튼을 클릭하여 자동으로 가져온 url을 다운로드 리스트에 추가 합니다.
           </div>
         </div>
         <div class="col-md-4" style="text-align: center">
           <img src="../assets/body/step3.svg" alt="step3" />
           <div class="instructions-head">3. 파일 다운로드</div>
           <div class="instructions">
-            단 몇 초 안에 파일을 얻을 수 있습니다
+            다운로드 목록에서 다운로드 버튼을 눌러서 다운로드 해줍니다 완료된 다운로드 목록은 로그인 시 확인 가능 합니다.
           </div>
         </div>
+        <div class="border border-primary border-1 text-align: center instructions p-3 mx-auto mt-3" style="width: 50%;">
+          *다운 받은 파일은 영리 목적이 아닌 개인소장용으로 사용해야 합니다. 저작권 및 초상권의 책임은 파일 공유를 하는 사용자에게 있습니다.
+        </div>
       </div>
-      
+
+      <div
+        style="
+          font-size: xxx-large;
+          font-weight: bolder;
+          padding: 10px;
+          text-align: center;
+          background: -webkit-linear-gradient(45deg, #10439f, #74e291);
+          margin: 2rem auto;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          white-space: pre-wrap;
+          display: flex;justify-content: center;align-items: center;
+        "
+        _ngcontent-ng-c2310961675=""
+        class="page-title"
+      >
+        오로라 브라우저
+      </div>
 
       <div class="row">
         <div class="col-md-6 ">
@@ -1028,7 +1072,7 @@
            
                 <th scope="col" style="width: 2rem"></th>
                 <th scope="col" style="width: 2rem"></th>
-                <th scope="col" style="width: 2rem"></th>
+                <!-- <th scope="col" style="width: 2rem"></th> -->
               </tr>
             </thead>
             <tbody>
@@ -1056,16 +1100,11 @@
                   </div>
                 </td>
                 <td title="{{ download.value.filename }}">
-                  <span class="down-info">File name:</span>
-                  {{ download.value.title }}
+                  <!-- <span class="down-info">File name:</span> -->
+                  <span class="clamp-2">{{ download.value.title }}</span>
                   <br />
-                  <span class="down-info">Quality:</span>
-                  {{ download.value.quality }}
-                  <br />
-                  <span class="down-info">Format:</span>
-                  {{ download.value.format }}
-                  <br />
-                  <span class="down-info">Speed:</span>
+                  {{ download.value.quality }} /
+                  {{ download.value.format }} /
                   {{ download.value.speed | speed }}
                 </td>
               
@@ -1105,7 +1144,7 @@
                   </div>
                 </td>
                 <td>
-                  <div style="display: inline-block; width: 1.5rem">
+                  <!-- <div style="display: inline-block; width: 1.5rem">
                     <fa-icon
                       *ngIf="download.value.status == 'finished'"
                       [icon]="faCheckCircle"
@@ -1116,29 +1155,26 @@
                       [icon]="faTimesCircle"
                       class="text-danger"
                     ></fa-icon>
-                  </div>
+                  </div> -->
                   <span
                     ngbTooltip="{{ download.value.msg }} | {{
                       download.value.error
                     }}"
+                    class="clamp-2 "
                     ><a
                       *ngIf="!!download.value.filename; else noDownloadLink"
                       href="{{ buildDownloadLink(download.value) }}"
                       target="_blank"
-                      ><span class="down-info">File name:</span>
+                      >
+                      <!-- <span class="down-info">File name:</span> -->
                       {{ download.value.title }}</a
                     ></span
                   >
                   <br />
-                  <span class="down-info">Quality:</span>
-                  {{ download.value.quality }}
-                  <br />
-                  <span class="down-info">Format:</span>
+                  {{ download.value.quality }} /
                   {{ download.value.format }}
-                  <br />
-                  <span *ngIf="download.value.size"
-                    ><span class="down-info">File size:</span>
-                    {{ download.value.size | fileSize }}</span
+                  <span *ngIf="download.value.size">
+                    / {{ download.value.size | fileSize }}</span
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}

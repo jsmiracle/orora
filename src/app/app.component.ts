@@ -88,6 +88,96 @@ export class AppComponent implements AfterViewInit {
   isPasswordChangeVisible = false;
   oldPassword: string = '';
   newPassword: string = '';
+  brands: { image: string, url: string }[] = [
+    {
+      image: '../assets/brands/1.jpg',
+      url: 'http://app.ac/cErv0uS03'
+    },
+    {
+      image: '../assets/brands/2.png',
+      url: 'http://app.ac/UbMxQXl43'
+    },
+    {
+      image: '../assets/brands/3.png',
+      url: 'http://app.ac/2bMz71l13'
+    },
+    {
+      image: '../assets/brands/4.jpeg',
+      url: 'http://app.ac/2bMz71l13'
+    },
+    {
+      image: '../assets/brands/5.jpg',
+      url: 'http://app.ac/wErv0zS43'
+    },
+    {
+      image: '../assets/brands/6.png',
+      url: 'http://app.ac/t3PNJ1J83'
+    },
+    {
+      image: '../assets/brands/7.png',
+      url: 'http://app.ac/OAC1hT523'
+    },
+    {
+      image: '../assets/brands/8.jpg',
+      url: 'http://app.ac/tqpHEr243'
+    },
+    {
+      image: '../assets/brands/9.png',
+      url: 'http://app.ac/Y3PNJzJ73'
+    },
+    {
+      image: '../assets/brands/10.png',
+      url: 'http://app.ac/fbMz7ul03'
+    },
+    {
+      image: '../assets/brands/11.jpg',
+      url: 'http://app.ac/tqpHEr243'
+    },
+  ];
+  slideConfig = {
+    "slidesToShow": 6,
+    "slidesToScroll": 3,
+    "infinite": true,
+    "autoplay": true,
+    "autoplaySpeed": 2000,
+    responsive: [
+      {
+        breakpoint: 450,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1
+        }
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1
+        }
+      },
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1
+        }
+      },
+      {
+        breakpoint: 1400,
+        settings: {
+          slidesToShow: 5,
+          slidesToScroll: 1
+        }
+      },
+      {
+        breakpoint: 1600,
+        settings: {
+          slidesToShow: 6,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
 
   constructor(
     public downloads: DownloadsService,

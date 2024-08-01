@@ -5,6 +5,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CookieService } from 'ngx-cookie-service';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
 
 import { AppComponent } from './app.component';
 import { EtaPipe, SpeedPipe, EncodeURIComponent, FileSizePipe } from './downloads.pipe';
@@ -34,6 +35,7 @@ import { NgOtpInputModule } from 'ng-otp-input';
     NgSelectModule,
     NgOtpInputModule,
     NgxPaginationModule,
+    SlickCarouselModule,
     ServiceWorkerModule.register('custom-service-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
