@@ -278,7 +278,7 @@
                 </td>
                 <td title="{{ download.value.filename }}" >
                   <!-- <span class="down-info">File name:</span> -->
-                  <span class="clamp-2">
+                  <span class="clamp-2-with-static-width">
                     {{ download.value.title }}
                   </span>
                   <br />
@@ -361,7 +361,7 @@
                     ngbTooltip="{{ download.value.msg }} | {{
                       download.value.error
                     }}"
-                    class="clamp-2"
+                    class="clamp-2-with-static-width"
                     ><a
                       *ngIf="!!download.value.filename; else noDownloadLink"
                       href="{{ buildDownloadLink(download.value) }}"
@@ -379,10 +379,10 @@
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}
-                    <span *ngIf="download.value.msg" class="clamp-2">
+                    <span *ngIf="download.value.msg" class="clamp-2-with-static-width">
                       <br />{{ download.value.msg }}
                     </span>
-                    <span *ngIf="download.value.error" class="clamp-2">
+                    <span *ngIf="download.value.error" class="clamp-2-with-static-width">
                       <br />Error: {{ download.value.error }}
                     </span>
                   </ng-template>
@@ -987,7 +987,7 @@
               </div>
               <div class="col-md-8">
                 <div class="card-body">
-                  <h5 class="card-title clamp-2">{{download.title}}</h5>
+                  <h5 class="card-title clamp-2-with-static-width">{{download.title}}</h5>
                   <div class="card-text">
                     <span class="text-muted">{{download.format}} | {{formatBytes(download.size)}}</span>
                   </div>
@@ -1101,7 +1101,7 @@
                 </td>
                 <td title="{{ download.value.filename }}">
                   <!-- <span class="down-info">File name:</span> -->
-                  <span class="clamp-2">{{ download.value.title }}</span>
+                  <span class="clamp-2-with-static-width">{{ download.value.title }}</span>
                   <br />
                   {{ download.value.quality }} /
                   {{ download.value.format }} /
@@ -1160,7 +1160,7 @@
                     ngbTooltip="{{ download.value.msg }} | {{
                       download.value.error
                     }}"
-                    class="clamp-2 "
+                    class="clamp-2-with-static-width "
                     ><a
                       *ngIf="!!download.value.filename; else noDownloadLink"
                       href="{{ buildDownloadLink(download.value) }}"
@@ -1178,10 +1178,10 @@
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}
-                    <span *ngIf="download.value.msg" class="clamp-2">
+                    <span *ngIf="download.value.msg" class="clamp-2-with-static-width">
                       <br />{{ download.value.msg }}
                     </span>
-                    <span *ngIf="download.value.error" class="clamp-2">
+                    <span *ngIf="download.value.error" class="clamp-2-with-static-width">
                       <br />Error: {{ download.value.error }}
                     </span>
                   </ng-template>
