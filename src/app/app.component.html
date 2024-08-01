@@ -379,12 +379,12 @@
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}
-                    <span *ngIf="download.value.msg"
-                      ><br />{{ download.value.msg }}</span
-                    >
-                    <span *ngIf="download.value.error"
-                      ><br />Error: {{ download.value.error }}</span
-                    >
+                    <span *ngIf="download.value.msg" class="clamp-2">
+                      <br />{{ download.value.msg }}
+                    </span>
+                    <span *ngIf="download.value.error" class="clamp-2">
+                      <br />Error: {{ download.value.error }}
+                    </span>
                   </ng-template>
                 </td>
                 <td style="text-align: center;">
@@ -1178,12 +1178,12 @@
                   >
                   <ng-template #noDownloadLink>
                     {{ download.value.title }}
-                    <span *ngIf="download.value.msg"
-                      ><br />{{ download.value.msg }}</span
-                    >
-                    <span *ngIf="download.value.error"
-                      ><br />Error: {{ download.value.error }}</span
-                    >
+                    <span *ngIf="download.value.msg" class="clamp-2">
+                      <br />{{ download.value.msg }}
+                    </span>
+                    <span *ngIf="download.value.error" class="clamp-2">
+                      <br />Error: {{ download.value.error }}
+                    </span>
                   </ng-template>
                 </td>
                 <td>
