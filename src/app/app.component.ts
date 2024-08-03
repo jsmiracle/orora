@@ -9,10 +9,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import SseService from './sse.service';
 import { Formats, Format, Quality } from './formats';
 import { Theme, Themes } from './theme';
-import { KeyValue } from '@angular/common';
 import AlertService from './alert.service';
 import ValidatorService from './validator.service';
-import { ChangePasswordDto, CheckVerificationCodeDto, DownloadsHistoryDto, DownloadsHistoryRequestDto, IDownload, LoginDto, RegisterDto, SendVerificationCodeDto, UserDto } from './interfaces';
+import { ChangePasswordDto, CheckVerificationCodeDto, DownloadsHistoryDto, DownloadsHistoryRequestDto, IDownloadWithThumbnail, LoginDto, RegisterDto, SendVerificationCodeDto, UserDto } from './interfaces';
 import { ResponsesText } from './enums';
 import { environment } from 'src/environments/environment.prod';
 
@@ -127,11 +126,12 @@ export class AppComponent implements AfterViewInit {
     },
   ];
   slideConfig = {
-    "slidesToShow": 6,
-    "slidesToScroll": 3,
-    "infinite": true,
-    "autoplay": true,
-    "autoplaySpeed": 2000,
+    slidesToShow: 6,
+    slidesToScroll: 3,
+    infinite: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    arrows: false,
     responsive: [
       {
         breakpoint: 450,
@@ -213,15 +213,12 @@ export class AppComponent implements AfterViewInit {
       return;
     }
 
-    const currentTime = Date.now() / 1000;
     const decoded = jwtDecode(token);
-
-    const isValid = decoded.exp > currentTime;
-    if (!isValid) {
+    if(!decoded) {
       localStorage.setItemItem('token', '');
       this.hasToken = false;
       return;
-    } 
+    }
 
     this.hasToken = true;
   }
@@ -660,7 +657,7 @@ export class AppComponent implements AfterViewInit {
     ).subscribe();
   }
 
-  addToDownloadsHistory(download): void {
+  addToDownloadsHistory(download: IDownloadWithThumbnail): void {
     if(!this.hasToken) {
       return;
     }
@@ -670,7 +667,7 @@ export class AppComponent implements AfterViewInit {
     const downloadHistoryDto: DownloadsHistoryRequestDto = {
       title,
       format,
-      size,
+      size: size || 0,
       url
     }
 
@@ -842,7 +839,7 @@ export class AppComponent implements AfterViewInit {
       })
     ).subscribe();
   }
-
+ 
   formatDate(dateString: string) {
     const date = new Date(dateString);
     

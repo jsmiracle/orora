@@ -210,13 +210,11 @@
               <tbody>
                 <tr *ngFor="let download of sseDownloads">
                   <td>
-                    <div *ngIf="download.thumnnail_url">
                       <img
-                        [src]="download.thumnnail_url"
-                        alt="YouTube Thumbnail"
+                        [src]="download.thumbnailUrl"
+                        alt=""
                         style="width: 100%; height: auto;"
                       />
-                    </div>
                   </td>
                   <td>
                     <a [href]="download.url" target="_blank" class="clamp-2 adaptive-title" >
@@ -241,7 +239,7 @@
                       >
                         <fa-icon [icon]="faDownload"></fa-icon>
                         다운로드
-                      </a>
+                    </a>
                     }
                     @else if (download.status === "failed") {
                       <img src="../assets/icons/warning.svg" alt="error">
@@ -806,13 +804,13 @@
           <div *ngFor="let download of downloadsHistory | paginate: { itemsPerPage: downloadHistoryLimit, currentPage: downloadHistoryPage, totalItems: downloadHistoryTotal }" class="card p-3 mb-2">
             <div class="row no-gutters">
               <div class="col-md-2 d-flex justify-content-right align-items-center">
-                <img src={{download.thumbnailUrl}} class="card-img" alt="icon">
+                <img [src]="download.thumbnailUrl" class="card-img" alt="icon">
               </div>
               <div class="col-md-8">
                 <div class="card-body">
                   <h5 class="card-title clamp-2-with-static-width">{{download.title}}</h5>
                   <div class="card-text">
-                    <span class="text-muted">{{download.format}} | {{parseToInt(download.size) | fileSize}}</span>
+                    <span class="text-muted">{{download.format}} <span *ngIf="download.size">|</span> {{parseToInt(download.size) | fileSize}}</span>
                   </div>
                   <div class="card-text">
                     <span class="text-muted">{{formatDate(download.createdAt)}}</span>

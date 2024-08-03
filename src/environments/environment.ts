@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:5000/api",
-  backendUrl: "http://10.108.1.100:8081/api"
+  apiUrl: process.env.API_URL,
+  backendUrl: process.env.BACKEND_URL
 };
 
 /*
