@@ -3,9 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
-  apiUrl: process.env.API_URL,
-  backendUrl: process.env.BACKEND_URL
+  production: true,
+  apiUrl: "http://localhost:5000/api", // express.js (registration, login ...)
+  backendUrl: "http://localhost:8081/api" // python sse (metube backend)
 };
 
 /*
