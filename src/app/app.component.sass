@@ -1,4 +1,4 @@
-body
+body, .navbar
     background-color: linear-gradient(135deg,#dff5ff,#f6f5f2) !important
 
 .button-toggle-theme:focus, .button-toggle-theme:active
@@ -444,7 +444,6 @@ img
 
 .clamp-2-with-static-width
   display: -webkit-box
-  max-width: 100px
   -webkit-line-clamp: 2
   -webkit-box-orient: vertical
   overflow: hidden
@@ -478,3 +477,23 @@ img
   outline: none
   box-shadow: none
   border-color: #378CE7
+
+.table td, .table th
+  vertical-align: middle
+
+.text-truncate
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.clamp-2-with-static-width
+  max-width: 100%
+
+
+@media (max-width: 600px)
+  .adaptive-btn
+    font-size: 10px
+  .adaptive-title
+    font-size: 12px
+  .adaptive-video-info
+    font-size: 10px

@@ -1,18 +1,18 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, AfterViewInit, HostListener } from '@angular/core';
 import { faTrashAlt, faCheckCircle, faTimesCircle  } from '@fortawesome/free-regular-svg-icons';
 import { faRedoAlt, faSun, faMoon, faCircleHalfStroke, faCheck, faExternalLinkAlt, faDownload, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, finalize, map, Observable, of, tap } from 'rxjs';
+import { jwtDecode } from "jwt-decode";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Download, DownloadsService, Status } from './downloads.service';
-import { MasterCheckboxComponent } from './master-checkbox.component';
+import SseService from './sse.service';
 import { Formats, Format, Quality } from './formats';
 import { Theme, Themes } from './theme';
 import { KeyValue } from '@angular/common';
 import AlertService from './alert.service';
 import ValidatorService from './validator.service';
-import { ChangePasswordDto, CheckVerificationCodeDto, DownloadsHistoryDto, DownloadsHistoryRequestDto, LoginDto, RegisterDto, SendVerificationCodeDto, UserDto } from './interfaces';
+import { ChangePasswordDto, CheckVerificationCodeDto, DownloadsHistoryDto, DownloadsHistoryRequestDto, IDownload, LoginDto, RegisterDto, SendVerificationCodeDto, UserDto } from './interfaces';
 import { ResponsesText } from './enums';
 import { environment } from 'src/environments/environment.prod';
 
@@ -22,14 +22,6 @@ import { environment } from 'src/environments/environment.prod';
   styleUrls: ['./app.component.sass'],
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild('queueMasterCheckbox') queueMasterCheckbox: MasterCheckboxComponent;
-  @ViewChild('queueDelSelected') queueDelSelected: ElementRef;
-  @ViewChild('doneMasterCheckbox') doneMasterCheckbox: MasterCheckboxComponent;
-  @ViewChild('doneDelSelected') doneDelSelected: ElementRef;
-  @ViewChild('doneClearCompleted') doneClearCompleted: ElementRef;
-  @ViewChild('doneClearFailed') doneClearFailed: ElementRef;
-  @ViewChild('doneRetryFailed') doneRetryFailed: ElementRef;
-
   faTrashAlt = faTrashAlt;
   faCheckCircle = faCheckCircle;
   faTimesCircle = faTimesCircle;
@@ -49,11 +41,11 @@ export class AppComponent implements AfterViewInit {
   format: string;
   folder: string;
   customNamePrefix: string;
-  autoStart: boolean;
   addInProgress = false;
   themes: Theme[] = Themes;
   activeTheme: Theme;
   customDirs$: Observable<string[]>;
+  sseDownloads = []
 
   isModalOpen = false;
   isVerificationModalOpen = false;
@@ -180,16 +172,15 @@ export class AppComponent implements AfterViewInit {
   };
 
   constructor(
-    public downloads: DownloadsService,
     private cookieService: CookieService,
     private http: HttpClient,
     private alertService: AlertService,
-    private validatorService: ValidatorService
+    private validatorService: ValidatorService,
+    public sseService: SseService
   ) {
     this.format = cookieService.get('metube_format') || 'mp4';
     this.setQualities();
     this.quality = cookieService.get('metube_quality') || 'best';
-    this.autoStart = cookieService.get('metube_auto_start') !== 'false';
     const currentURL = getQueryParameter('currentUrl');
     if (currentURL) {
       this.addUrl = currentURL;
@@ -200,39 +191,41 @@ export class AppComponent implements AfterViewInit {
 
   ngOnInit() {
     this.checkToken();
-    this.customDirs$ = this.getMatchingCustomDir();
-    this.setTheme(this.activeTheme);
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if (this.activeTheme.id === 'auto') {
-        this.setTheme(this.activeTheme);
+    this.sseService.getDownloads().subscribe(downloads => {
+      const hasNewChanges = !this.sseService.deepEqual(downloads, this.sseDownloads);
+      if (hasNewChanges) {
+        this.sseDownloads = downloads.reverse();
       }
     });
   }
+
+  ngAfterViewInit() {}
   
+  parseToInt(value: any) {
+    return parseInt(value)
+  } 
 
   checkToken() {
-    this.hasToken = !!localStorage.getItem('token');
-  }
+    const token = localStorage.getItem('token');
+    if(!token) {
+      this.hasToken = false;
+      return;
+    }
 
-  ngAfterViewInit() {
-    this.downloads.queueChanged.subscribe(() => {
-      this.queueMasterCheckbox.selectionChanged();
-    });
-    this.downloads.doneChanged.subscribe(() => {
-      this.doneMasterCheckbox.selectionChanged();
-        let completed: number = 0,
-          failed: number = 0;
-        this.downloads.done.forEach((dl) => {
-          if (dl.status === 'finished') completed++;
-          else if (dl.status === 'error') failed++;
-        });
-        this.doneClearCompleted.nativeElement.disabled = completed === 0;
-        this.doneClearFailed.nativeElement.disabled = failed === 0;
-        this.doneRetryFailed.nativeElement.disabled = failed === 0;
-    });
-  }
+    const currentTime = Date.now() / 1000;
+    const decoded = jwtDecode(token);
 
+    const isValid = decoded.exp > currentTime;
+    if (!isValid) {
+      localStorage.setItemItem('token', '');
+      this.hasToken = false;
+      return;
+    } 
+
+    this.hasToken = true;
+  }
+  
   openVerificationModal() {
     this.isVerificationModalOpen = true;
   }
@@ -299,7 +292,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   selectFormat(format: string) {
-    if (!this.addInProgress && !this.downloads.loading) {
+    if (!this.addInProgress && !this.sseService.loading) {
       this.format = format;
       this.formatChanged();
     }
@@ -862,22 +855,6 @@ export class AppComponent implements AfterViewInit {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 
-  formatBytes(bytes: number) {
-    const kilobyte = 1024;
-    const megabyte = kilobyte * 1024;
-    const gigabyte = megabyte * 1024;
-
-    if (bytes >= gigabyte) {
-        return (bytes / gigabyte).toFixed(2) + ' GB';
-    } else if (bytes >= megabyte) {
-        return (bytes / megabyte).toFixed(2) + ' MB';
-    } else if (bytes >= kilobyte) {
-        return (bytes / kilobyte).toFixed(2) + ' KB';
-    } else {
-        return bytes + ' bytes';
-    }
-  }
-
   clearUnauthorized() {
     localStorage.setItem('token', '');
     this.clearVariables();
@@ -908,42 +885,12 @@ export class AppComponent implements AfterViewInit {
     this.alertService.showToast(ResponsesText.YOU_HAVE_BEEN_LOGGED_OUT_SUCCESSFULLY, "success");
   }
 
-  asIsOrder(a, b) {
-    return 1;
+  deleteVideo(id: string) {
+    this.sseService.delete(id);
   }
 
   qualityChanged() {
     this.cookieService.set('metube_quality', this.quality, { expires: 3650 });
-    this.downloads.customDirsChanged.next(this.downloads.customDirs);
-  }
-
-  showAdvanced() {
-    return this.downloads.configuration['CUSTOM_DIRS'];
-  }
-
-  allowCustomDir(tag: string) {
-    if (this.downloads.configuration['CREATE_CUSTOM_DIRS']) {
-      return tag;
-    }
-    return false;
-  }
-
-  isAudioType() {
-    return this.quality == 'audio' || this.format == 'mp3' || this.format == 'm4a' || this.format == 'opus' || this.format == 'wav';
-  }
-
-  getMatchingCustomDir(): Observable<string[]> {
-    return this.downloads.customDirsChanged.asObservable().pipe(
-      map((output) => {
-        if (this.isAudioType()) {
-          console.debug('Showing audio-specific download directories');
-          return output['audio_download_dir'];
-        } else {
-          console.debug('Showing default download directories');
-          return output['download_dir'];
-        }
-      })
-    );
   }
 
   getPreferredTheme(cookieService: CookieService) {
@@ -953,11 +900,6 @@ export class AppComponent implements AfterViewInit {
     }
 
     return this.themes.find((x) => x.id === theme) ?? this.themes.find((x) => x.id === 'auto');
-  }
-
-  themeChanged(theme: Theme) {
-    this.cookieService.set('metube_theme', theme.id, { expires: 3650 });
-    this.setTheme(theme);
   }
 
   setTheme(theme: Theme) {
@@ -972,20 +914,8 @@ export class AppComponent implements AfterViewInit {
   formatChanged() {
     this.cookieService.set('metube_format', this.format, { expires: 3650 });
     this.setQualities();
-    this.downloads.customDirsChanged.next(this.downloads.customDirs);
   }
 
-  autoStartChanged() {
-    this.cookieService.set('metube_auto_start', this.autoStart ? 'true' : 'false', { expires: 3650 });
-  }
-
-  queueSelectionChanged(checked: number) {
-    this.queueDelSelected.nativeElement.disabled = checked == 0;
-  }
-
-  doneSelectionChanged(checked: number) {
-    this.doneDelSelected.nativeElement.disabled = checked == 0;
-  }
 
   setQualities() {
     this.qualities = this.formats.find((el) => el.id == this.format).qualities;
@@ -993,78 +923,17 @@ export class AppComponent implements AfterViewInit {
     this.quality = exists ? this.quality : 'best';
   }
 
-  addDownload(url?: string, quality?: string, format?: string, folder?: string, customNamePrefix?: string, autoStart?: boolean) {
+  async addDownload(url?: string, quality?: string, format?: string) {
     url = url ?? this.addUrl;
     quality = quality ?? this.quality;
     format = format ?? this.format;
-    folder = folder ?? this.folder;
-    customNamePrefix = customNamePrefix ?? this.customNamePrefix;
-    autoStart = autoStart ?? this.autoStart;
-
-    console.debug(
-      `Downloading: url=${url} quality=${quality} format=${format} folder=${folder} customNamePrefix=${customNamePrefix} autoStart=${autoStart}`
-    );
+    
     this.addInProgress = true;
-
-    this.downloads.add(url, quality, format, folder, customNamePrefix, autoStart).subscribe((status: Status) => {
-        if (status.status === 'error') {
-          alert(`Error adding URL: ${url}`);
-        } else {
-          this.addUrl = '';
-        }
-        this.addInProgress = false;
-      });
+    this.sseService.add(url, quality, format);
+    this.addInProgress = false;
+    this.addUrl = '';
   }
 
-  downloadItemByKey(id: string) {
-    this.downloads.startById([id]).subscribe();
-  }
-
-  retryDownload(key: string, download: Download) {
-    this.addDownload(download.url, download.quality, download.format, download.folder, download.custom_name_prefix, true);
-    this.downloads.delById('done', [key]).subscribe();
-  }
-
-  delDownload(where: string, id: string) {
-    this.downloads.delById(where, [id]).subscribe();
-  }
-
-  delSelectedDownloads(where: string) {
-    this.downloads.delByFilter(where, (dl) => dl.checked).subscribe();
-  }
-
-  clearCompletedDownloads() {
-    this.downloads.delByFilter('done', (dl) => dl.status === 'finished').subscribe();
-  }
-
-  clearFailedDownloads() {
-    this.downloads.delByFilter('done', (dl) => dl.status === 'error').subscribe();
-  }
-
-  retryFailedDownloads() {
-    this.downloads.done.forEach((dl, key) => {
-      if (dl.status === 'error') {
-        this.retryDownload(key, dl);
-      }
-    });
-  }
-
-  buildDownloadLink(download: Download) {
-    let baseDir = this.downloads.configuration['PUBLIC_HOST_URL'];
-    if (download.quality == 'audio' || download.filename.endsWith('.mp3')) {
-      baseDir = this.downloads.configuration['PUBLIC_HOST_AUDIO_URL'];
-    }
-
-    if (download.folder) {
-      baseDir += download.folder + '/';
-    }
-
-    return baseDir + encodeURIComponent(download.filename);
-  }
-
-  identifyDownloadRow(index: number, row: KeyValue<string, Download>) {
-    return row.key;
-  }
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -1087,17 +956,8 @@ export class AppComponent implements AfterViewInit {
     this.isSignUpModalOpen = true;
   }
 
-  openMypageModal() {
-    this.isMypageModal = true;
-  }
-
   closeSignUpModal(event: Event) {
     this.isSignUpModalOpen = false;
-    event.stopPropagation();
-  }
-
-  closeMaypageModal(event: Event) {
-    this.isMypageModal = false;
     event.stopPropagation();
   }
 

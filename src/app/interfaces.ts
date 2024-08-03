@@ -49,3 +49,21 @@ export interface DownloadsHistoryDto {
   thumbnailUrl: string;
   createdAt: Date;
 }
+
+export interface IDownload {
+  id: string;
+  url: string;
+  format: string;
+  quality: string;
+  folder: string;
+  user_id: string;
+  status: string;
+  download_url: string;
+  title: string;
+  size: number;
+}
+
+
+export interface IDownloadWithThumbnail extends IDownload {
+  thumbnailUrl: string;
+}

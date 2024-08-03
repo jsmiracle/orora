@@ -1,30 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, isDevMode } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CookieService } from 'ngx-cookie-service';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { LoadingComponent } from './loading/loading.component';
 
 import { AppComponent } from './app.component';
-import { EtaPipe, SpeedPipe, EncodeURIComponent, FileSizePipe } from './downloads.pipe';
-import { MasterCheckboxComponent, SlaveCheckboxComponent } from './master-checkbox.component';
-import { MeTubeSocket } from './metube-socket';
+import { FileSizePipe } from './downloads.pipe';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgOtpInputModule } from 'ng-otp-input';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EtaPipe,
-    SpeedPipe,
     FileSizePipe,
-    EncodeURIComponent,
-    MasterCheckboxComponent,
-    SlaveCheckboxComponent
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -36,14 +30,8 @@ import { NgOtpInputModule } from 'ng-otp-input';
     NgOtpInputModule,
     NgxPaginationModule,
     SlickCarouselModule,
-    ServiceWorkerModule.register('custom-service-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
-    })
   ],
-  providers: [CookieService, MeTubeSocket],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
