@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: "http://localhost:5000/api", // express.js (registration, login ...)
-  backendUrl: "http://localhost:8081/api" // python sse (metube backend)
+  apiUrl: "https://api.ororabrowser.com/api", // express.js (registration, login ...)
+  backendUrl: "https://download.ororabrowser.com/api", // python https (add, delete)
+  websocketUrl: "wss://download.ororabrowser.com/api/ws" // websocket server
 };

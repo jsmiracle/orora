@@ -11,34 +11,36 @@ import { IDownload, IDownloadWithThumbnail } from './interfaces';
 export default class SseService {
   public loading: boolean = false;
   private backendUrl: string;
+  private websocketUrl: string;
   private userId: string;
   private downloadsSubject: Subject<IDownloadWithThumbnail[]> = new Subject<IDownloadWithThumbnail[]>();
 
   constructor(private http: HttpClient) {
     this.backendUrl = environment.backendUrl;
+    this.websocketUrl = environment.websocketUrl;
     this.userId = this.getUserId();
     this.initEventSource();
   }
 
   private initEventSource(): void {
     this.loading = true;
-    const eventSource = new EventSource(`${this.backendUrl}/events?user_id=${this.userId}`);
+    const eventSource = new WebSocket(`${this.websocketUrl}?user_id=${this.userId}`);
 
     eventSource.onopen = () => {
       this.loading = false;
     };
-
+  
     eventSource.onmessage = (event) => {
       const parsedData = Object.values(JSON.parse(event.data));
-      const downloadsArray = parsedData.map((download: IDownload) => ({
-        ...download,
-        thumbnailUrl: this.generateThumbnailUrl(download.url)
-      }));
-      this.downloadsSubject.next(downloadsArray);
+        const downloadsArray = parsedData.map((download: IDownload) => ({
+          ...download,
+          thumbnailUrl: this.generateThumbnailUrl(download.url)
+        }));
+        this.downloadsSubject.next(downloadsArray);
     };
 
     eventSource.onerror = (error) => {
-      console.error('EventSource error: ', error);
+      console.error(error);
       this.loading = false;
     };
   }
