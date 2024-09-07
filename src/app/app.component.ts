@@ -81,48 +81,48 @@ export class AppComponent implements AfterViewInit {
   newPassword: string = '';
   brands: { image: string, url: string }[] = [
     {
-      image: '../assets/brands/1.jpg',
-      url: 'http://app.ac/cErv0uS03'
+      image: '../assets/brands/agoda.jpg',
+      url: 'https://click.linkprice.com/click.php?m=agoda&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/2.png',
-      url: 'http://app.ac/UbMxQXl43'
+      image: '../assets/brands/aliex.png',
+      url: 'https://click.dotmap.co.kr/?pf_code=100427109712100780'
     },
     {
-      image: '../assets/brands/3.png',
+      image: '../assets/brands/coupang.jpeg',
       url: 'http://app.ac/2bMz71l13'
     },
     {
-      image: '../assets/brands/4.jpeg',
-      url: 'http://app.ac/2bMz71l13'
+      image: '../assets/brands/crocs.jpeg',
+      url: 'https://click.linkprice.com/click.php?m=crocskr&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/5.jpg',
-      url: 'http://app.ac/wErv0zS43'
+      image: '../assets/brands/emart.jpg',
+      url: 'https://click.linkprice.com/click.php?m=emart&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/6.png',
-      url: 'http://app.ac/t3PNJ1J83'
+      image: '../assets/brands/gmarket.jpg',
+      url: 'ttps://click.linkprice.com/click.php?m=gmarket&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/7.png',
-      url: 'http://app.ac/OAC1hT523'
+      image: '../assets/brands/hotel.png',
+      url: 'https://click.linkprice.com/click.php?m=hotelskr&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/8.jpg',
-      url: 'http://app.ac/tqpHEr243'
+      image: '../assets/brands/jejupass.png',
+      url: 'https://click.linkprice.com/click.php?m=jejupass&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/9.png',
-      url: 'http://app.ac/Y3PNJzJ73'
+      image: '../assets/brands/lenovo.jpg',
+      url: 'https://click.linkprice.com/click.php?m=lenovo&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/10.png',
-      url: 'http://app.ac/fbMz7ul03'
+      image: '../assets/brands/temu.jpg',
+      url: 'https://click.linkprice.com/click.php?m=temu&a=A100692258&l=0000'
     },
     {
-      image: '../assets/brands/11.jpg',
-      url: 'http://app.ac/tqpHEr243'
+      image: '../assets/brands/trip.png',
+      url: 'https://click.linkprice.com/click.php?m=ctrip&a=A100692258&l=0000'
     },
   ];
   slideConfig = {
