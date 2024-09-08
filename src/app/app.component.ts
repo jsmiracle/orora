@@ -90,7 +90,7 @@ export class AppComponent implements AfterViewInit {
     },
     {
       image: '../assets/brands/coupang.jpeg',
-      url: 'http://app.ac/2bMz71l13'
+      url: 'https://link.coupang.com/a/bPBSbr
     },
     {
       image: '../assets/brands/crocs.jpeg',
