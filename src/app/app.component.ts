@@ -49,6 +49,7 @@ export class AppComponent implements AfterViewInit {
   isModalOpen = false;
   isVerificationModalOpen = false;
   isSignUpModalOpen = false;
+  isAlerModal = true;
   isMypageModal = false;
   isAccountModalOpen = false;
   isDownloadsModalOpen = false;
@@ -955,6 +956,10 @@ export class AppComponent implements AfterViewInit {
 
   closeSignUpModal(event: Event) {
     this.isSignUpModalOpen = false;
+    event.stopPropagation();
+  }
+  closeAlertModal(event: Event) {
+    this.isAlerModal = false;
     event.stopPropagation();
   }
 
